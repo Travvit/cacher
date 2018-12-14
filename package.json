@@ -4,7 +4,12 @@
   "description": "A library for caching Tranzact components.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "coverage": "node_modules/.bin/nyc --reporter=html --reporter=lcov node mocha.js && open coverage/lcov-report/index.html",
+    "integrationTests": "./node_modules/mocha/bin/_mocha --timeout 30000 --colors ./**/integrationTests/**/*.test.js",
+    "unitTests": "./node_modules/mocha/bin/_mocha --timeout 30000 --colors './**/unitTests/**/*.test.js'",
+    "lint": "node ./node_modules/eslint/bin/eslint --fix",
+    "docs": "node_modules/.bin/documentation build ./components/*/*.js -f md -o ./docs/API_docs.md",
+    "test": "node ./mocha.js"
   },
   "repository": {
     "type": "git",
