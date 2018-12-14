@@ -1,0 +1,12 @@
+{
+    "extends": "tranzact",
+    "rules": {
+      "global-require": ["warn"],
+      "no-param-reassign": "off",
+      "no-prototype-builtins": "off",
+      "guard-for-in": "off",
+      "no-restricted-syntax": "off",
+      "no-shadow": "off"
+    }
+  }
+  

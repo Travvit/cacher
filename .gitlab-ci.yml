@@ -1,0 +1,18 @@
+variables:
+    GEMFURY_TOKEN: "3gusRyJQczSYczah31qq"
+    GEMFURY_ORG_ID: "h_app47568534"
+    GEMFURY_PACKAGE_NAME: "tz-permissions"
+    GEMFURY_USER_NAME: "tzadmin"
+    GITLAB_TOKEN: "gzV_z4pciEqqFvdyLtpZ"
+
+
+Gemfury Deploy:
+    stage: deploy
+    only:
+        - master@tranzact/tz-permissions
+    allow_failure: false
+    script:
+        - git fetch origin
+        - git checkout -B master origin/master
+        - git remote add fury https://$GEMFURY_USER_NAME:$GEMFURY_TOKEN@git.fury.io/$GEMFURY_ORG_ID/$GEMFURY_PACKAGE_NAME.git || git remote set-url fury https://$GEMFURY_USER_NAME:$GEMFURY_TOKEN@git.fury.io/$GEMFURY_ORG_ID/$GEMFURY_PACKAGE_NAME.git
+        - git push fury master
