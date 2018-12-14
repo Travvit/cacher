@@ -4,69 +4,77 @@
 
 -   [CacheHandler][1]
     -   [Parameters][2]
--   [Cacheable][3]
-    -   [getOptions][4]
--   [CachedObject][5]
-    -   [Parameters][6]
-    -   [getAllMethodNames][7]
-        -   [Parameters][8]
-    -   [checkCacheableObject][9]
+    -   [apply][3]
+        -   [Parameters][4]
+-   [Cacheable][5]
+    -   [getOptions][6]
+-   [CachedObject][7]
+    -   [Parameters][8]
+    -   [cachify][9]
         -   [Parameters][10]
--   [Cacher][11]
-    -   [Parameters][12]
-    -   [getCachedValue][13]
+    -   [getAllMethodNames][11]
+        -   [Parameters][12]
+    -   [checkCacheableObject][13]
         -   [Parameters][14]
-    -   [setCachedValue][15]
-        -   [Parameters][16]
-    -   [purgeBuckets][17]
+-   [Cacher][15]
+    -   [Parameters][16]
+    -   [getCachedValue][17]
         -   [Parameters][18]
--   [HashFactory][19]
-    -   [Parameters][20]
-    -   [create][21]
+    -   [setCachedValue][19]
+        -   [Parameters][20]
+    -   [purgeBuckets][21]
         -   [Parameters][22]
-    -   [stringifyParams][23]
-        -   [Parameters][24]
--   [MutatorHandler][25]
-    -   [Parameters][26]
--   [PassthroughHandler][27]
--   [RedisManager][28]
-    -   [getCachedValue][29]
-        -   [Parameters][30]
-    -   [setCachedValue][31]
+-   [HashFactory][23]
+    -   [Parameters][24]
+    -   [create][25]
+        -   [Parameters][26]
+    -   [stringifyParams][27]
+        -   [Parameters][28]
+-   [MutatorHandler][29]
+    -   [Parameters][30]
+    -   [apply][31]
         -   [Parameters][32]
-    -   [purgeBuckets][33]
-        -   [Parameters][34]
-    -   [checkRedisAvailable][35]
-    -   [createConnection][36]
-    -   [handleRedisError][37]
+-   [PassthroughHandler][33]
+    -   [apply][34]
+        -   [Parameters][35]
+-   [RedisManager][36]
+    -   [getCachedValue][37]
         -   [Parameters][38]
-    -   [handleRedisConnect][39]
-    -   [handleRedisPmessages][40]
-        -   [Parameters][41]
-    -   [handleKeyExpired][42]
-        -   [Parameters][43]
-    -   [handleKeyDeleted][44]
-        -   [Parameters][45]
-    -   [handleBucketDeleted][46]
-        -   [Parameters][47]
-    -   [handleBucketAddKey][48]
+    -   [setCachedValue][39]
+        -   [Parameters][40]
+    -   [purgeBuckets][41]
+        -   [Parameters][42]
+    -   [checkRedisAvailable][43]
+    -   [createConnection][44]
+    -   [handleRedisError][45]
+        -   [Parameters][46]
+    -   [handleRedisConnect][47]
+    -   [handleRedisPmessages][48]
         -   [Parameters][49]
-    -   [handleBucketDeleteKey][50]
+    -   [handleKeyExpired][50]
         -   [Parameters][51]
-    -   [handleDataSaved][52]
+    -   [handleKeyDeleted][52]
         -   [Parameters][53]
-    -   [handleDataValInc][54]
+    -   [handleBucketDeleted][54]
         -   [Parameters][55]
-    -   [removeKey][56]
+    -   [handleBucketAddKey][56]
         -   [Parameters][57]
-    -   [validateKey][58]
+    -   [handleBucketDeleteKey][58]
         -   [Parameters][59]
-    -   [validateBuckets][60]
+    -   [handleDataSaved][60]
         -   [Parameters][61]
-    -   [memorySizeOf][62]
+    -   [handleDataValInc][62]
         -   [Parameters][63]
-    -   [evalDataSize][64]
+    -   [removeKey][64]
         -   [Parameters][65]
+    -   [validateKey][66]
+        -   [Parameters][67]
+    -   [validateBuckets][68]
+        -   [Parameters][69]
+    -   [memorySizeOf][70]
+        -   [Parameters][71]
+    -   [evalDataSize][72]
+        -   [Parameters][73]
 
 ## CacheHandler
 
@@ -74,8 +82,20 @@ Cache Handlers are proxy handlers for methods who's responses are cached.
 
 ### Parameters
 
--   `cacher` **[object][66]** 
--   `hashFactory` **[object][66]** 
+-   `cacher` **[object][74]** the cacher used to cache the method responses.
+-   `hashFactory` **[object][74]** the method that generates the key for the cached value.
+
+### apply
+
+This method abstracts the cached method call.
+
+#### Parameters
+
+-   `target` **any** the cached method.
+-   `thisArg` **any** the object who's method is cached.
+-   `argumentsList` **any** the list of arguments passed to the cached method.
+
+Returns **any** the result of the cached method.
 
 ## Cacheable
 
@@ -93,21 +113,33 @@ specified here.
 This class allow the caching of any arbitrary objects. The class essentially caches the output of
 a the member methods within a Cache server. The class only offers a constructor. All cache management
 is performed using private members of this module and an options argument to the constructor.
-**NOTE:** constructors are never cached.
+`NOTE:` constructors are never cached.
 
 ### Parameters
 
--   `cacheHandler` **[object][66]** the proxy object that handles the cached methods.
--   `passthroughHandler` **[object][66]** the proxy object that handles the passthrough methods.
--   `mutatorHandler` **[object][66]** the proxy object that handles the mutator methods.
+-   `cacheHandler` **[object][74]** the proxy object that handles the cached methods.
+-   `passthroughHandler` **[object][74]** the proxy object that handles the passthrough methods.
+-   `mutatorHandler` **[object][74]** the proxy object that handles the mutator methods.
+
+### cachify
+
+Returns a new cachified object.
+
+#### Parameters
+
+-   `cacheableObject` **any** the object being cached.
+
+Returns **[object][74]** returns the cached version of the cacheableObject.
 
 ### getAllMethodNames
 
-Resturns a set of strings that correspond to the names of the own member methods of the object.
+Returns a set of strings that correspond to the names of the own member methods of the object.
 
 #### Parameters
 
 -   `obj` **any** the object being analyzed.
+
+Returns **[Array][75]&lt;[string][76]>** a list of the methods.
 
 ### checkCacheableObject
 
@@ -128,7 +160,7 @@ This decouples the caching implementation from the general caching functions.
 ### Parameters
 
 -   `cacheManager`  
--   `an` **[Object][66]** object that represents a cache manager, such as Redis.
+-   `an` **[Object][74]** object that represents a cache manager, such as Redis.
     The cache manager abstracts the inner functions of the caching client API.
 
 ### getCachedValue
@@ -137,7 +169,9 @@ Returns the cached value.
 
 #### Parameters
 
--   `key` **[string][67]** the key for the cached value.
+-   `key` **[string][76]** the key for the cached value.
+
+Returns **any** returns the cached value.
 
 ### setCachedValue
 
@@ -145,12 +179,14 @@ Saves a given value into the cache with the associated key.
 
 #### Parameters
 
--   `cachedObject` **[string][67]** the name of the object.
--   `cachedMethod` **[string][67]** name of the method whos response is being cached.
--   `key` **[string][67]** the key for the cached value.
+-   `cachedObject` **[string][76]** the name of the object.
+-   `cachedMethod` **[string][76]** name of the method whos response is being cached.
+-   `key` **[string][76]** the key for the cached value.
 -   `value` **any** the cached value.
--   `ttl` **[number][68]** the TTL for the cached value.
--   `buckets` **[Array][69]&lt;[string][67]>** a list of buckets.
+-   `ttl` **[number][77]** the TTL for the cached value.
+-   `buckets` **[Array][75]&lt;[string][76]>** a list of buckets.
+
+Returns **any** returns a response from the cache handler after the value is cached.
 
 ### purgeBuckets
 
@@ -158,9 +194,13 @@ Invalidates the keys from the associated buckets.
 
 #### Parameters
 
--   `buckets` **[Array][69]&lt;[string][67]>** a list of buckets.
+-   `buckets` **[Array][75]&lt;[string][76]>** a list of buckets.
+
+Returns **[boolean][78]** returns whether the buckets were purged or not.
 
 ## HashFactory
+
+This is used to generate hash values.
 
 ### Parameters
 
@@ -173,11 +213,10 @@ This method generates the Redis hash key.
 
 #### Parameters
 
--   `method`  
+-   `method` **any** the name of the method invoking the cache. Default value is extracted from environment variables.
 -   `params` **...any** the parameters passed on to the invoked method.
--   `meth` **any** the name of the method invoking the cache. Default value is extracted from environment variables.
 
-Returns **[string][67]** the hash key necessary for a cache key.
+Returns **[string][76]** the hash key necessary for a cache key.
 
 ### stringifyParams
 
@@ -187,7 +226,7 @@ Stringifies the parameter based on JSON.
 
 -   `params` **any** 
 
-Returns **[string][67]** the stringified parameter.
+Returns **[string][76]** the stringified parameter.
 
 ## MutatorHandler
 
@@ -195,11 +234,35 @@ Motator Handlers are proxy handlers for methods that mutate the source of truth 
 
 ### Parameters
 
--   `cacher` **[object][66]** 
+-   `cacher` **[object][74]** 
+
+### apply
+
+This method abstracts the mutator method call.
+
+#### Parameters
+
+-   `target` **any** the method that performs a data mutation.
+-   `thisArg` **any** the object who's method is cached.
+-   `argumentsList` **any** the list of arguments passed to the cached method.
+
+Returns **any** the result of the mutator method.
 
 ## PassthroughHandler
 
 Passthrough Handlers are proxy handlers for methods who's responses are not cached.
+
+### apply
+
+This method abstracts the passthrough method call.
+
+#### Parameters
+
+-   `target` **any** the method who's value is not cached.
+-   `thisArg` **any** the object who's methods are cached.
+-   `argumentsList` **any** the list of arguments passed to the passthrough method.
+
+Returns **any** the result of the passthrough method.
 
 ## RedisManager
 
@@ -213,9 +276,9 @@ Returns a Promise that resolves to an object saved in cache or a null value.
 
 #### Parameters
 
--   `key` **[string][67]** the Redis cache key.
+-   `key` **[string][76]** the Redis cache key.
 
-Returns **[Promise][70]** returns a promise that resolves to a cached object.
+Returns **[Promise][79]** returns a promise that resolves to a cached object.
 
 ### setCachedValue
 
@@ -226,7 +289,7 @@ The hash structure is as follows:
 {
 data: cachedData,
 readCount: 1,
-createData: date,
+createDate: date,
 sourceObject: 'objectName',
 sourceMethod: 'methodName',
 ttl
@@ -235,14 +298,14 @@ ttl
 
 #### Parameters
 
--   `cachedObject` **[string][67]** the object being cached.
--   `cachedMethod` **[string][67]** the name of the method whos value is being cached.
--   `key` **[string][67]** the Redis cache key.
+-   `cachedObject` **[string][76]** the object being cached.
+-   `cachedMethod` **[string][76]** the name of the method whos value is being cached.
+-   `key` **[string][76]** the Redis cache key.
 -   `value` **any** the value that needs to be strinigfied.
--   `ttl` **[number][68]** the TTL for the cache entry in seconds.
--   `buckets` **[Array][69]&lt;[string][67]>** a list of buckets.
+-   `ttl` **[number][77]** the TTL for the cache entry in seconds.
+-   `buckets` **[Array][75]&lt;[string][76]>** a list of buckets.
 
-Returns **[Promise][70]** returns a promise that resolves to a status message from Redis.
+Returns **[Promise][79]** returns a promise that resolves to a status message from Redis.
 
 ### purgeBuckets
 
@@ -250,11 +313,15 @@ Invalidates the keys from the associated buckets.
 
 #### Parameters
 
--   `buckets` **[Array][69]&lt;[string][67]>** a list of buckets.
+-   `buckets` **[Array][75]&lt;[string][76]>** a list of buckets.
+
+Returns **[boolean][78]** returns `true` for success, and `false` for failure.
 
 ### checkRedisAvailable
 
 Throws an error is Redis server is unavailable. Otherwise returns true.
+
+Returns **[boolean][78]** returns `true` when Redis is available for operation or `false` otherwise.
 
 ### createConnection
 
@@ -264,6 +331,8 @@ in milliseconds. If you return a non-number, no further retry will happen and al
 commands are flushed with errors. Return an error to return that specific error to all
 offline commands.
 
+Returns **[object][74]** returns a Redis client connection.
+
 ### handleRedisError
 
 Redis error event handler.
@@ -271,6 +340,8 @@ Redis error event handler.
 #### Parameters
 
 -   `error` **any** 
+
+Returns **[boolean][78]** always returns `true`.
 
 ### handleRedisConnect
 
@@ -282,9 +353,11 @@ Redis published messages event handler.
 
 #### Parameters
 
--   `pattern` **[string][67]** 
--   `channel` **[string][67]** 
--   `message` **[string][67]** 
+-   `pattern` **[string][76]** 
+-   `channel` **[string][76]** 
+-   `message` **[string][76]** 
+
+Returns **[boolean][78]** always returns `true`.
 
 ### handleKeyExpired
 
@@ -292,7 +365,7 @@ RedisManager key expiration event handler.
 
 #### Parameters
 
--   `key` **[string][67]** 
+-   `key` **[string][76]** 
 
 ### handleKeyDeleted
 
@@ -300,7 +373,7 @@ RedisManager key deletion event handler.
 
 #### Parameters
 
--   `key` **[string][67]** 
+-   `key` **[string][76]** 
 
 ### handleBucketDeleted
 
@@ -308,7 +381,7 @@ RedisManager bucket deletion event handler.
 
 #### Parameters
 
--   `key` **[string][67]** the name of the bucket.
+-   `key` **[string][76]** the name of the bucket.
 
 ### handleBucketAddKey
 
@@ -316,7 +389,7 @@ RedisManager key addition to bucket event handler.
 
 #### Parameters
 
--   `bucket` **[string][67]** the name of the bucket.
+-   `bucket` **[string][76]** the name of the bucket.
 
 ### handleBucketDeleteKey
 
@@ -324,7 +397,7 @@ RedisManager key removal from bucket event handler.
 
 #### Parameters
 
--   `bucket` **[string][67]** the name of the bucket.
+-   `bucket` **[string][76]** the name of the bucket.
 
 ### handleDataSaved
 
@@ -332,7 +405,7 @@ RedisManager data saving event handler.
 
 #### Parameters
 
--   `key` **[string][67]** the key for the data saved.
+-   `key` **[string][76]** the key for the data saved.
 
 ### handleDataValInc
 
@@ -340,7 +413,7 @@ RedisManager data value increment event handler.
 
 #### Parameters
 
--   `key` **[string][67]** the key for the data value.
+-   `key` **[string][76]** the key for the data value.
 
 ### removeKey
 
@@ -348,7 +421,8 @@ Removes a key from the associated buckets and GLOBAL bucket.
 
 #### Parameters
 
--   `key` **[string][67]** 
+-   `key` **[string][76]** 
+-   `1` **[number][77]** when the operation completes.
 
 ### validateKey
 
@@ -378,7 +452,7 @@ Returns the size in memory the object would occupy.
 
 #### Parameters
 
--   `obj` **[object][66]** 
+-   `obj` **[object][74]** 
 
 Returns **any** a string representation of the size of the object.
 
@@ -395,138 +469,156 @@ It also displays the size of the data when it is JSON stringified.
 
 [2]: #parameters
 
-[3]: #cacheable
+[3]: #apply
 
-[4]: #getoptions
+[4]: #parameters-1
 
-[5]: #cachedobject
+[5]: #cacheable
 
-[6]: #parameters-1
+[6]: #getoptions
 
-[7]: #getallmethodnames
+[7]: #cachedobject
 
 [8]: #parameters-2
 
-[9]: #checkcacheableobject
+[9]: #cachify
 
 [10]: #parameters-3
 
-[11]: #cacher
+[11]: #getallmethodnames
 
 [12]: #parameters-4
 
-[13]: #getcachedvalue
+[13]: #checkcacheableobject
 
 [14]: #parameters-5
 
-[15]: #setcachedvalue
+[15]: #cacher
 
 [16]: #parameters-6
 
-[17]: #purgebuckets
+[17]: #getcachedvalue
 
 [18]: #parameters-7
 
-[19]: #hashfactory
+[19]: #setcachedvalue
 
 [20]: #parameters-8
 
-[21]: #create
+[21]: #purgebuckets
 
 [22]: #parameters-9
 
-[23]: #stringifyparams
+[23]: #hashfactory
 
 [24]: #parameters-10
 
-[25]: #mutatorhandler
+[25]: #create
 
 [26]: #parameters-11
 
-[27]: #passthroughhandler
+[27]: #stringifyparams
 
-[28]: #redismanager
+[28]: #parameters-12
 
-[29]: #getcachedvalue-1
+[29]: #mutatorhandler
 
-[30]: #parameters-12
+[30]: #parameters-13
 
-[31]: #setcachedvalue-1
+[31]: #apply-1
 
-[32]: #parameters-13
+[32]: #parameters-14
 
-[33]: #purgebuckets-1
+[33]: #passthroughhandler
 
-[34]: #parameters-14
+[34]: #apply-2
 
-[35]: #checkredisavailable
+[35]: #parameters-15
 
-[36]: #createconnection
+[36]: #redismanager
 
-[37]: #handlerediserror
+[37]: #getcachedvalue-1
 
-[38]: #parameters-15
+[38]: #parameters-16
 
-[39]: #handleredisconnect
+[39]: #setcachedvalue-1
 
-[40]: #handleredispmessages
+[40]: #parameters-17
 
-[41]: #parameters-16
+[41]: #purgebuckets-1
 
-[42]: #handlekeyexpired
+[42]: #parameters-18
 
-[43]: #parameters-17
+[43]: #checkredisavailable
 
-[44]: #handlekeydeleted
+[44]: #createconnection
 
-[45]: #parameters-18
+[45]: #handlerediserror
 
-[46]: #handlebucketdeleted
+[46]: #parameters-19
 
-[47]: #parameters-19
+[47]: #handleredisconnect
 
-[48]: #handlebucketaddkey
+[48]: #handleredispmessages
 
 [49]: #parameters-20
 
-[50]: #handlebucketdeletekey
+[50]: #handlekeyexpired
 
 [51]: #parameters-21
 
-[52]: #handledatasaved
+[52]: #handlekeydeleted
 
 [53]: #parameters-22
 
-[54]: #handledatavalinc
+[54]: #handlebucketdeleted
 
 [55]: #parameters-23
 
-[56]: #removekey
+[56]: #handlebucketaddkey
 
 [57]: #parameters-24
 
-[58]: #validatekey
+[58]: #handlebucketdeletekey
 
 [59]: #parameters-25
 
-[60]: #validatebuckets
+[60]: #handledatasaved
 
 [61]: #parameters-26
 
-[62]: #memorysizeof
+[62]: #handledatavalinc
 
 [63]: #parameters-27
 
-[64]: #evaldatasize
+[64]: #removekey
 
 [65]: #parameters-28
 
-[66]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object
+[66]: #validatekey
 
-[67]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String
+[67]: #parameters-29
 
-[68]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number
+[68]: #validatebuckets
 
-[69]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array
+[69]: #parameters-30
 
-[70]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise
+[70]: #memorysizeof
+
+[71]: #parameters-31
+
+[72]: #evaldatasize
+
+[73]: #parameters-32
+
+[74]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object
+
+[75]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array
+
+[76]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String
+
+[77]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number
+
+[78]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean
+
+[79]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise
