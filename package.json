@@ -8,7 +8,7 @@
     "integrationTests": "./node_modules/mocha/bin/_mocha --timeout 30000 --colors ./**/integrationTests/**/*.test.js",
     "unitTests": "./node_modules/mocha/bin/_mocha --timeout 30000 --colors './**/unitTests/**/*.test.js'",
     "lint": "node ./node_modules/eslint/bin/eslint --fix",
-    "docs": "node_modules/.bin/documentation build ./components/*/*.js -f md -o ./docs/API_docs.md",
+    "docs": "node_modules/.bin/documentation build ./lib/*.js -f md -o ./docs/API_docs.md",
     "test": "node ./mocha.js"
   },
   "repository": {
