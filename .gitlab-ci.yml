@@ -1,7 +1,7 @@
 variables:
     GEMFURY_TOKEN: "3gusRyJQczSYczah31qq"
     GEMFURY_ORG_ID: "h_app47568534"
-    GEMFURY_PACKAGE_NAME: "tz-permissions"
+    GEMFURY_PACKAGE_NAME: "tz-cacher"
     GEMFURY_USER_NAME: "tzadmin"
     GITLAB_TOKEN: "gzV_z4pciEqqFvdyLtpZ"
 
@@ -9,7 +9,7 @@ variables:
 Gemfury Deploy:
     stage: deploy
     only:
-        - master@tranzact/tz-permissions
+        - master@tranzact/tz-cacher
     allow_failure: false
     script:
         - git fetch origin
