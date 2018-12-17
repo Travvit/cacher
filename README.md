@@ -9,15 +9,17 @@ This library enables caching objects that implement the `Cacheable` interface. I
 ## Summary
 It is very important to utilize a caching service or server to speedup the response of a Node.js application. A long running query or heavy I/O operation can slow down an application. Often times developers use a client library for a backing server/service to cache responses of long running processes within their application. This creates a direct dependency of the caching code with the caching library and the underlying service.
 
-There is also a concern with users being served stale/outdated or invalid data from the cache.
+There are also concerns with users being served stale/outdated or invalid data from the cache.
 
-What is required is a reliable caching mechanism that allows the developer to take advantage of a caching service without the concern of ever using invalid data. `tz-cacher` addresses these issues along with several others as listed below.
+What is required is a reliable caching mechanism that allows the developer to take advantage of a caching service without the concern of ever using invalid data.
+
+`tz-cacher` addresses these issues along with several others as listed below.
 
 ## Features
-1.  Customizible expiry time per cached object or per method of a cached object.
-2.  Simple caching interface.
+1.  Customizable expiry time per cached object, or per method, of a cached object.
+2.  Simple caching API.
 3.  Backing service abstracted away.
-4.  Simultaneous eviction of all invalid cached data.
+4.  Simultaneous eviction of all invalid cached data, when source is updated.
 5.  Prevent parts of an object from getting cached.
 
 ## Core concepts
