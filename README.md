@@ -7,9 +7,9 @@ This library enables caching objects that implement the `Cacheable` interface. I
 # Table of Contents
 
 ## Summary
-It is very important to utilize a caching service or server to speedup the response of a Node.js application. A long running query or heavy I/O operation can slow down an application. Often times developers use a client library for a backing server/service to cache responses of long running processes within their application. This creates a direct dependency of the caching code with the caching library and the underlying service.
+It is very important to utilize a caching service or server to speedup the response of a Node.js application. A long running query or heavy I/O operation can slow down an application. Often times developers use a client library for a backing server/service to cache responses of long running processes within their application. However, this creates a direct dependency of the caching code with the caching library and the underlying service.
 
-There are also concerns with users being served stale/outdated or invalid data from the cache.
+There are also concerns with users being served stale/outdated or invalid data from the cache. An example of this would be user permission related objects, that have been cached. If any of the underlying data for user permission is updated, a significant number of the cached data would need to be evicted from the cache as soon as the update is applied.
 
 What is required is a reliable caching mechanism that allows the developer to take advantage of a caching service without the concern of ever using invalid data.
 
@@ -18,21 +18,26 @@ What is required is a reliable caching mechanism that allows the developer to ta
 ## Features
 1.  Customizable expiry time per cached object, or per method, of a cached object.
 2.  Simple caching API.
-3.  Backing service abstracted away.
-4.  Simultaneous eviction of all invalid cached data, when source is updated.
+3.  Backing service abstracted away, but configurable via environment variables.
+4.  Simultaneous eviction of all invalid cached data, when data source is updated.
 5.  Prevent parts of an object from getting cached.
 
 ## Core concepts
-In order to cache an object, and make it consumable by other parts of the code, we would need to cache the results of the individual methods. Therefore we'd need to control the caching of the individual methods. Normally a class will have the following type of public methods:
--   Methods that fetch or produce data that may be cached
--   Methods that fetch or produce data that should not be cached, or passed through.
--   Methods that set or update data and are not cacheable.
+In order to cache an object, and make it consumable by other parts of the code, we would need to cache the results of the individual methods within that object. Therefore we'd need to control the caching of the individual methods. Generally a class should have the following types of public methods:
+
+-   Methods that fetch or produce data that may be cached. These methods are called cacheable.
+-   Methods that fetch or produce data that should not be cached, or passed through. These methods are called passthrough.
+-   Methods that set or update data and are not cacheable. These methods are called mutator.
   
-`tz-cacher` allows you to handle the processing of all 3 types of methods. The library also allows the instantaneous invalidation of cached objects when a method updates the source of the underlying data. This is done my tracking the cached values within a specific group of the source, called a `bucket`. When the source of a bucket is updated, all data associated with that bucket is then considered invalid and are thus purged from the cache.
+`tz-cacher` allows you to handle the processing of all 3 types of methods. 
+
+The library also allows the instantaneous invalidation of cached objects when a method updates the source of the underlying data. This is done my tracking the cached values within a specific group of the source, called a `bucket`. When the source of a bucket is updated, all data associated with that bucket is then considered invalid and are thus purged from the cache.
 
 For example, when refering to a DAL object, the source of the data for the accessor methods of the DAL is the data table being accessed. By tying the DAL object to the table as a bucket, we can remove the stale data whenever we call an upsert method via the DAL.
 
 Similar schemes may be applied to any `Cacheable` object.
+
+Please note that a "cachified" object would still perform as expected, if the backing service goes offline. i.e. you can continue to service requests if the connection to the caching server is lost.
 
 ## Installation
 This is a Zayo specific library managed on our gemfury repo. `tz-cacher` can simply be installed with [npm](https://www.npmjs.com/):
@@ -84,21 +89,21 @@ class TestClass extends Cacheable {
     }
     getOptions() {
         return {
-            ttl: 100,
-            buckets: ['test-bucket'],
+            ttl: 100,                   // Default TTL for the class objects
+            buckets: ['test-bucket'],   // Default buckets for the class objects
             methods: {
                 passthroughMethod: {
-                    passthrough: true
+                    passthrough: true   // This is a passthrough method, it's values are not cached.
                 },
                 ttlMethod: {
-                    ttl: 15
+                    ttl: 15             // This method is cached and has a custom TTL.
                 },
                 ttlBucketsMethod: {
-                    ttl: 15,
+                    ttl: 15,            // This method is cached and has a custom TTL, and a specific list of buckets it's associated with.
                     buckets: ['test-bucket', 'test-bucket-2']
                 },
                 mutatorMethod: {
-                    mutator: true,
+                    mutator: true,      // This method is a mutator. It's values are never cached, and all buckets associated with it are cleared upon execution.
                     buckets: ['test-bucket', 'test-bucket-2']
                 }
             }
@@ -134,7 +139,7 @@ const cachedObject = await CacheFactory.cachify();
 cachedObject.ttlBucketsMethod('Tester');
 ```
 
-You can also use the Injection pattern to return cachified instances of regular components:
+You can also use the Assembly pattern to return cachified instances of regular components:
 ```javascript
 // The following returns a cachified DAL. NOTE: The DAL class has implemented the Cacheable interface.
 getDAL() {
