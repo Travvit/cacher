@@ -1,5 +1,3 @@
-let configVars = require('./configvar.json');
-Object.assign(process.env, configVars);
 let _ = require('lodash');
 let Mocha = require('mocha');
 let fs = require('fs');

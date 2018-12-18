@@ -41,6 +41,34 @@ This is a Zayo specific library managed on our gemfury repo. `tz-cacher` can sim
 npm install --save tz-cacher
 ```
 
+## Configuration
+This library currently supports Redis as a backing service. Other backing services may be added in the future.
+
+You are allowed to set the following configuration directives when using the cacher.
+
+```bash
+# The name of the application
+APP_NAME = "tz-cacher-dev"
+# The Node.js environment
+NODE_ENV = "development"
+# The URL for the Redis server, default = ""
+REDIS_URL = ""
+# Redis server hostname, default = "localhost"
+REDIS_HOST = ""
+# Redis server port, default = "6379"
+REDIS_PORT = ""
+# The maximum time (in milliseconds) spent retrying connecting with Redis.
+# After this time has expired, the client would stop attempt to reconnect.
+# default = "30000"
+REDIS_MAX_RETRY_TIME = ""
+# The maximum number of times the connection retry would be attempted.
+# default = "31"
+REDIS_MAX_RETRY_ATTEMPTS = ""
+# The frequency (in milliseconds) with which the Redis client would attempt to retry connection.
+# default = "1000"
+REDIS_RETRY_FREQ = ""
+```
+
 ## Usage Examples
 The library exposes two components, the `Cacheable` interface, and a `CacheFactory`. Any `class` that instantiates cacheable objects, must extend the `Cacheable` interface and implement the `getOptions()` method. This method should return a caching options object as shown below.
 
