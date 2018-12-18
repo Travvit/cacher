@@ -47,9 +47,9 @@ This library currently supports Redis as a backing service. Other backing servic
 You are allowed to set the following configuration directives when using the cacher.
 
 ```bash
-# The name of the application
+# The name of the application, default = "tz-cacher-dev"
 APP_NAME = "tz-cacher-dev"
-# The Node.js environment
+# The Node.js environment, default = "development"
 NODE_ENV = "development"
 # The URL for the Redis server, default = ""
 REDIS_URL = ""
