@@ -2,42 +2,69 @@
 
 ### Table of Contents
 
--   [CacheHandler][1]
-    -   [Parameters][2]
-    -   [apply][3]
-        -   [Parameters][4]
--   [Cacheable][5]
-    -   [getOptions][6]
--   [CachedObject][7]
-    -   [Parameters][8]
-    -   [cachify][9]
-        -   [Parameters][10]
--   [Cacher][11]
-    -   [Parameters][12]
-    -   [getCachedValue][13]
-        -   [Parameters][14]
-    -   [setCachedValue][15]
-        -   [Parameters][16]
-    -   [purgeBuckets][17]
-        -   [Parameters][18]
--   [HashFactory][19]
-    -   [Parameters][20]
-    -   [create][21]
-        -   [Parameters][22]
--   [MutatorHandler][23]
-    -   [Parameters][24]
-    -   [apply][25]
-        -   [Parameters][26]
--   [PassthroughHandler][27]
-    -   [apply][28]
-        -   [Parameters][29]
--   [RedisManager][30]
-    -   [getCachedValue][31]
-        -   [Parameters][32]
-    -   [setCachedValue][33]
+-   [CacheHandlerFactory][1]
+    -   [create][2]
+        -   [Parameters][3]
+-   [CacheHandler][4]
+    -   [Parameters][5]
+    -   [apply][6]
+        -   [Parameters][7]
+-   [Cacheable][8]
+    -   [getOptions][9]
+-   [CachedObject][10]
+    -   [Parameters][11]
+    -   [cachify][12]
+        -   [Parameters][13]
+-   [Cacher][14]
+    -   [Parameters][15]
+    -   [getCachedValue][16]
+        -   [Parameters][17]
+    -   [setCachedValue][18]
+        -   [Parameters][19]
+    -   [purgeBuckets][20]
+        -   [Parameters][21]
+-   [HandlerFactory][22]
+    -   [create][23]
+-   [HashFactory][24]
+    -   [Parameters][25]
+    -   [create][26]
+        -   [Parameters][27]
+-   [MutatorHandlerFactory][28]
+    -   [create][29]
+        -   [Parameters][30]
+-   [MutatorHandler][31]
+    -   [Parameters][32]
+    -   [apply][33]
         -   [Parameters][34]
-    -   [purgeBuckets][35]
-        -   [Parameters][36]
+-   [PassthroughHandlerFactory][35]
+    -   [create][36]
+-   [PassthroughHandler][37]
+    -   [apply][38]
+        -   [Parameters][39]
+-   [RedisManager][40]
+    -   [getCachedValue][41]
+        -   [Parameters][42]
+    -   [setCachedValue][43]
+        -   [Parameters][44]
+    -   [purgeBuckets][45]
+        -   [Parameters][46]
+
+## CacheHandlerFactory
+
+**Extends Handlerfactory**
+
+An implementation of the HandlerFactory that created a CacheHandler.
+
+### create
+
+Creates a cache handler.
+
+#### Parameters
+
+-   `cacher` **[object][47]** the cacher used to cache the method responses.
+-   `hashFactory` **[object][47]** the method that generates the key for the cached value.
+
+Returns **any** a cache handler.
 
 ## CacheHandler
 
@@ -45,8 +72,8 @@ Cache Handlers are proxy handlers for methods who's responses are cached.
 
 ### Parameters
 
--   `cacher` **[object][37]** the cacher used to cache the method responses.
--   `hashFactory` **[object][37]** the method that generates the key for the cached value.
+-   `cacher` **[object][47]** the cacher used to cache the method responses.
+-   `hashFactory` **[object][47]** the method that generates the key for the cached value.
 
 ### apply
 
@@ -80,9 +107,11 @@ is performed using private members of this module and an options argument to the
 
 ### Parameters
 
--   `cacheHandler` **[object][37]** the proxy object that handles the cached methods.
--   `passthroughHandler` **[object][37]** the proxy object that handles the passthrough methods.
--   `mutatorHandler` **[object][37]** the proxy object that handles the mutator methods.
+-   `cacher` **[object][47]** the wrapper for the cacher object.
+-   `hashFactory` **[object][47]** the hash factory.
+-   `cacheHandlerFactory` **[object][47]** the factory to create a cacheHandler.
+-   `passthroughHandlerFactory` **[object][47]** the factory to create a passthroughHandler.
+-   `mutatorHandlerFactory` **[object][47]** the factory to create a mutatorHandler.
 
 ### cachify
 
@@ -92,7 +121,7 @@ Returns a new cachified object.
 
 -   `cacheableObject` **any** the object being cached.
 
-Returns **[object][37]** returns the cached version of the cacheableObject.
+Returns **[object][47]** returns the cached version of the cacheableObject.
 
 ## Cacher
 
@@ -102,7 +131,7 @@ This decouples the caching implementation from the general caching functions.
 ### Parameters
 
 -   `cacheManager`  
--   `an` **[Object][37]** object that represents a cache manager, such as Redis.
+-   `an` **[Object][47]** object that represents a cache manager, such as Redis.
     The cache manager abstracts the inner functions of the caching client API.
 
 ### getCachedValue
@@ -111,7 +140,7 @@ Returns the cached value.
 
 #### Parameters
 
--   `key` **[string][38]** the key for the cached value.
+-   `key` **[string][48]** the key for the cached value.
 
 Returns **any** returns the cached value.
 
@@ -121,12 +150,12 @@ Saves a given value into the cache with the associated key.
 
 #### Parameters
 
--   `cachedObject` **[string][38]** the name of the object.
--   `cachedMethod` **[string][38]** name of the method whos response is being cached.
--   `key` **[string][38]** the key for the cached value.
+-   `cachedObject` **[string][48]** the name of the object.
+-   `cachedMethod` **[string][48]** name of the method whos response is being cached.
+-   `key` **[string][48]** the key for the cached value.
 -   `value` **any** the cached value.
--   `ttl` **[number][39]** the TTL for the cached value.
--   `buckets` **[Array][40]&lt;[string][38]>** a list of buckets.
+-   `ttl` **[number][49]** the TTL for the cached value.
+-   `buckets` **[Array][50]&lt;[string][48]>** a list of buckets.
 
 Returns **any** returns a response from the cache handler after the value is cached.
 
@@ -136,9 +165,17 @@ Invalidates the keys from the associated buckets.
 
 #### Parameters
 
--   `buckets` **[Array][40]&lt;[string][38]>** a list of buckets.
+-   `buckets` **[Array][50]&lt;[string][48]>** a list of buckets.
 
-Returns **[boolean][41]** returns whether the buckets were purged or not.
+Returns **[boolean][51]** returns whether the buckets were purged or not.
+
+## HandlerFactory
+
+Abastract class that every HandlerFactories object must inherit in order to create handler factories.
+
+### create
+
+Returns **any** an object that represents a handler factory.
 
 ## HashFactory
 
@@ -158,7 +195,23 @@ This method generates the Redis hash key.
 -   `method` **any** the name of the method invoking the cache. Default value is extracted from environment variables.
 -   `params` **...any** the parameters passed on to the invoked method.
 
-Returns **[string][38]** the hash key necessary for a cache key.
+Returns **[string][48]** the hash key necessary for a cache key.
+
+## MutatorHandlerFactory
+
+**Extends Handlerfactory**
+
+An implementation of the HandlerFactory that created a MutatorHandler.
+
+### create
+
+Creates a mutator handler.
+
+#### Parameters
+
+-   `cacher` **[object][47]** the cacher used to cache the method responses.
+
+Returns **any** a mutator handler.
 
 ## MutatorHandler
 
@@ -166,7 +219,7 @@ Motator Handlers are proxy handlers for methods that mutate the source of truth 
 
 ### Parameters
 
--   `cacher` **[object][37]** 
+-   `cacher` **[object][47]** 
 
 ### apply
 
@@ -179,6 +232,18 @@ This method abstracts the mutator method call.
 -   `argumentsList` **any** the list of arguments passed to the cached method.
 
 Returns **any** the result of the mutator method.
+
+## PassthroughHandlerFactory
+
+**Extends Handlerfactory**
+
+An implementation of the HandlerFactory that created a PassthroughHandler.
+
+### create
+
+Creates a passthrough handler.
+
+Returns **any** a passthrough handler.
 
 ## PassthroughHandler
 
@@ -208,9 +273,9 @@ Returns a Promise that resolves to an object saved in cache or a null value.
 
 #### Parameters
 
--   `key` **[string][38]** the Redis cache key.
+-   `key` **[string][48]** the Redis cache key.
 
-Returns **[Promise][42]** returns a promise that resolves to a cached object.
+Returns **[Promise][52]** returns a promise that resolves to a cached object.
 
 ### setCachedValue
 
@@ -230,14 +295,14 @@ ttl
 
 #### Parameters
 
--   `cachedObject` **[string][38]** the object being cached.
--   `cachedMethod` **[string][38]** the name of the method whos value is being cached.
--   `key` **[string][38]** the Redis cache key.
+-   `cachedObject` **[string][48]** the object being cached.
+-   `cachedMethod` **[string][48]** the name of the method whos value is being cached.
+-   `key` **[string][48]** the Redis cache key.
 -   `value` **any** the value that needs to be strinigfied.
--   `ttl` **[number][39]** the TTL for the cache entry in seconds.
--   `buckets` **[Array][40]&lt;[string][38]>** a list of buckets.
+-   `ttl` **[number][49]** the TTL for the cache entry in seconds.
+-   `buckets` **[Array][50]&lt;[string][48]>** a list of buckets.
 
-Returns **[Promise][42]** returns a promise that resolves to a status message from Redis.
+Returns **[Promise][52]** returns a promise that resolves to a status message from Redis.
 
 ### purgeBuckets
 
@@ -245,90 +310,110 @@ Invalidates the keys from the associated buckets.
 
 #### Parameters
 
--   `buckets` **[Array][40]&lt;[string][38]>** a list of buckets.
+-   `buckets` **[Array][50]&lt;[string][48]>** a list of buckets.
 
-Returns **[boolean][41]** returns `true` for success, and `false` for failure.
+Returns **[boolean][51]** returns `true` for success, and `false` for failure.
 
-[1]: #cachehandler
+[1]: #cachehandlerfactory
 
-[2]: #parameters
+[2]: #create
 
-[3]: #apply
+[3]: #parameters
 
-[4]: #parameters-1
+[4]: #cachehandler
 
-[5]: #cacheable
+[5]: #parameters-1
 
-[6]: #getoptions
+[6]: #apply
 
-[7]: #cachedobject
+[7]: #parameters-2
 
-[8]: #parameters-2
+[8]: #cacheable
 
-[9]: #cachify
+[9]: #getoptions
 
-[10]: #parameters-3
+[10]: #cachedobject
 
-[11]: #cacher
+[11]: #parameters-3
 
-[12]: #parameters-4
+[12]: #cachify
 
-[13]: #getcachedvalue
+[13]: #parameters-4
 
-[14]: #parameters-5
+[14]: #cacher
 
-[15]: #setcachedvalue
+[15]: #parameters-5
 
-[16]: #parameters-6
+[16]: #getcachedvalue
 
-[17]: #purgebuckets
+[17]: #parameters-6
 
-[18]: #parameters-7
+[18]: #setcachedvalue
 
-[19]: #hashfactory
+[19]: #parameters-7
 
-[20]: #parameters-8
+[20]: #purgebuckets
 
-[21]: #create
+[21]: #parameters-8
 
-[22]: #parameters-9
+[22]: #handlerfactory
 
-[23]: #mutatorhandler
+[23]: #create-1
 
-[24]: #parameters-10
+[24]: #hashfactory
 
-[25]: #apply-1
+[25]: #parameters-9
 
-[26]: #parameters-11
+[26]: #create-2
 
-[27]: #passthroughhandler
+[27]: #parameters-10
 
-[28]: #apply-2
+[28]: #mutatorhandlerfactory
 
-[29]: #parameters-12
+[29]: #create-3
 
-[30]: #redismanager
+[30]: #parameters-11
 
-[31]: #getcachedvalue-1
+[31]: #mutatorhandler
 
-[32]: #parameters-13
+[32]: #parameters-12
 
-[33]: #setcachedvalue-1
+[33]: #apply-1
 
-[34]: #parameters-14
+[34]: #parameters-13
 
-[35]: #purgebuckets-1
+[35]: #passthroughhandlerfactory
 
-[36]: #parameters-15
+[36]: #create-4
 
-[37]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object
+[37]: #passthroughhandler
 
-[38]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String
+[38]: #apply-2
 
-[39]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number
+[39]: #parameters-14
 
-[40]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array
+[40]: #redismanager
 
-[41]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean
+[41]: #getcachedvalue-1
 
-[42]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise
+[42]: #parameters-15
+
+[43]: #setcachedvalue-1
+
+[44]: #parameters-16
+
+[45]: #purgebuckets-1
+
+[46]: #parameters-17
+
+[47]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object
+
+[48]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String
+
+[49]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number
+
+[50]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array
+
+[51]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean
+
+[52]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise
