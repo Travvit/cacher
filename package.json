@@ -21,10 +21,18 @@
     "caching",
     "redis"
   ],
-  "author": {
-    "name": "Walid Newaz",
-    "email": "walid.newaz@zayo.com"
-  },
+  "contributors": [
+    {
+      "name": "Kit Randall",
+      "email": "christopher.randall@zayo.com",
+      "url": "https://zayo.my.salesforce.com/00560000005CjSw"
+    },
+    {
+      "name": "Walid Newaz",
+      "email": "walid.newaz@zayo.com",
+      "url": "https://zayo.my.salesforce.com/0050z000005DqPE"
+    }
+  ],
   "license": "UNLICENSED",
   "dependencies": {
     "lodash": "^4.17.11",
