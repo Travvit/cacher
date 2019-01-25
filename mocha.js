@@ -1,3 +1,7 @@
+require('tz-config');
+process.env.NODE_ENV = 'development';
+process.env.APP_NAME = 'tz-cacher-dev';
+
 let _ = require('lodash');
 let Mocha = require('mocha');
 let fs = require('fs');
