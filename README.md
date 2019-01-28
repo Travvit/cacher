@@ -62,8 +62,8 @@ MAX_RETRY_TIME = 30000
 MAX_RETRY_ATTEMPTS = 31
 # The frequency in milliseconds with which connection retry is attempted. default = 1000
 REDIS_RETRY_FREQ = 1000
-# The flag that allows Redis caching to be turned off. default = true
-REDIS_MANAGER_ON = true
+# The flag that allows Redis caching to be turned off. default = false
+REDIS_MANAGER_ON = false
 # The URL for the Redis server, default = "redis://localhost:6379"
 REDIS_URL = ""
 # The URL for the Redis server, offered by Redislab
