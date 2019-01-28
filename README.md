@@ -1,6 +1,6 @@
 # tz-cacher
 
-1.2.0
+1.3.0
 
 This library enables caching objects that implement the `Cacheable` interface. It does the hard work for you so you don't have to! 😎
 
