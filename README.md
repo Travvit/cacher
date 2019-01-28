@@ -1,6 +1,6 @@
 # tz-cacher
 
-1.2.0
+1.3.0
 
 This library enables caching objects that implement the `Cacheable` interface. It does the hard work for you so you don't have to! 😎
 
@@ -51,27 +51,23 @@ This library currently supports Redis as a backing service. Other backing servic
 
 You are allowed to set the following configuration directives when using the cacher.
 
+**NOTE** Config variables are associated with the application's config variables. 
+
 ```bash
 # The name of the application, default = "tz-cacher-dev"
 APP_NAME = "tz-cacher-dev"
-# The Node.js environment, default = "development"
-NODE_ENV = "development"
-# The URL for the Redis server, default = ""
+# The maximum retry time in milliseconds after which retry attempts will fail., default = 30000
+MAX_RETRY_TIME = 30000
+# The maximum retry times after which retry attempts will fail. default = 31
+MAX_RETRY_ATTEMPTS = 31
+# The frequency in milliseconds with which connection retry is attempted. default = 1000
+REDIS_RETRY_FREQ = 1000
+# The flag that allows Redis caching to be turned off. default = false
+REDIS_MANAGER_ON = false
+# The URL for the Redis server, default = "redis://localhost:6379"
 REDIS_URL = ""
-# Redis server hostname, default = "localhost"
-REDIS_HOST = ""
-# Redis server port, default = "6379"
-REDIS_PORT = ""
-# The maximum time (in milliseconds) spent retrying connecting with Redis.
-# After this time has expired, the client would stop attempt to reconnect.
-# default = "30000"
-REDIS_MAX_RETRY_TIME = ""
-# The maximum number of times the connection retry would be attempted.
-# default = "31"
-REDIS_MAX_RETRY_ATTEMPTS = ""
-# The frequency (in milliseconds) with which the Redis client would attempt to retry connection.
-# default = "1000"
-REDIS_RETRY_FREQ = ""
+# The URL for the Redis server, offered by Redislab
+REDISCLOUD_URL
 ```
 
 ## Usage Examples
