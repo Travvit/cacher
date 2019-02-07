@@ -9,3 +9,5 @@ configvar.json
 *.DS_Store
 /coverage/
 .nyc_output
+process.txt
+isolate-*

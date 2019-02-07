@@ -1,6 +1,7 @@
 require('tz-config');
 process.env.NODE_ENV = 'development';
 process.env.APP_NAME = 'tz-cacher-dev';
+process.env.REDISCLOUD_URL = 'redis://localhost:6379';
 
 let _ = require('lodash');
 let Mocha = require('mocha');
