@@ -1,6 +1,6 @@
 # tz-cacher
 
-1.4.0
+1.5.0
 
 This library enables caching objects that implement the `Cacheable` interface. It does the hard work for you so you don't have to! 😎
 
@@ -63,7 +63,7 @@ MAX_RETRY_ATTEMPTS = 31
 # The frequency in milliseconds with which connection retry is attempted. default = 1000
 REDIS_RETRY_FREQ = 1000
 # The flag that allows Redis caching to be turned off. default = false
-REDIS_MANAGER_ON = false
+REDIS_MANAGER_ON = "false"
 # The URL for the Redis server, default = "redis://localhost:6379"
 REDIS_URL = ""
 # The URL for the Redis server, offered by Redislab

@@ -192,6 +192,7 @@ This method generates the Redis hash key.
 
 #### Parameters
 
+-   `className`  
 -   `method` **any** the name of the method invoking the cache. Default value is extracted from environment variables.
 -   `params` **...any** the parameters passed on to the invoked method.
 
