@@ -13,6 +13,7 @@ class Timer {
         console.log(`Timer started at: ${new Date()}`);
         this.startTime = process.hrtime();
         this.lastRecTime = this.startTime;
+        return this.startTime;
     }
 
     /**
@@ -23,6 +24,7 @@ class Timer {
         let diff = process.hrtime(this.lastRecTime);
         console.log(`Interval time: ${((diff[0] * NS_PER_SEC) + diff[1]) / MS_PER_SEC} ms`);
         this.lastRecTime = now;
+        return diff;
     }
 }
 

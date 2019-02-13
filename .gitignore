@@ -11,3 +11,4 @@ configvar.json
 .nyc_output
 process.txt
 isolate-*
+perftest.*

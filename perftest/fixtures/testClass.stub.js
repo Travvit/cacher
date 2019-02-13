@@ -1,4 +1,4 @@
-const Cacheable = require('../../../cacheable.js');
+const Cacheable = require('../../lib/cacheable.js');
 
 class TestClass extends Cacheable {
     constructor() {
