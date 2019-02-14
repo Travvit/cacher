@@ -19,7 +19,7 @@ let {
     CacheAssembler,
     cacheableObject,
     sleep
-} = require('./common.js');
+} = require('../common.js');
 
 async function initTests() {
     cacheFactory = CacheAssembler.getCacheFactory();
@@ -39,7 +39,7 @@ module.exports = async function scenario({
         await initTests();
 
         if (redisRWClient.connected) {
-            const numBuckets = 2;
+            const numBuckets = 4;
 
             await sendCommandAsync('FLUSHALL');
             timer.start();
@@ -73,14 +73,15 @@ module.exports = async function scenario({
             timeToPurge = await getPurgeStats();
             logger.log(`Data purged. Time taken: ${timeToPurge} ms`);
             stats = {
-                numObjects,
-                numBuckets,
-                timeToLoad,
-                timeToRead,
-                timeToPurge,
-                memUsed
+                'Number of Objects': numObjects,
+                'Number of Buckets': numBuckets,
+                'Time to Load': timeToLoad,
+                'Time to Read': timeToRead,
+                'Time to Purge': timeToPurge,
+                'Memory Used': memUsed
             };
             resolve(stats);
         }
     });
 };
+

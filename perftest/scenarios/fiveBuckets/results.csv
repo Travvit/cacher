@@ -1,0 +1,4 @@
+"Number of Objects","Number of Buckets","Time to Load","Time to Read","Time to Purge","Memory Used"
+1000,5,254,103,100,"2.1M"
+5000,5,452,100,99,"2.12M"
+25000,5,6014,109,101,"20.24M"
