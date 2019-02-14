@@ -56,6 +56,8 @@ You are allowed to set the following configuration directives when using the cac
 ```bash
 # The name of the application, default = "tz-cacher-dev"
 APP_NAME = "tz-cacher-dev"
+# The application envionment. default = "dev"
+APP_ENV = "dev"
 # The maximum retry time in milliseconds after which retry attempts will fail., default = 30000
 MAX_RETRY_TIME = 30000
 # The maximum retry times after which retry attempts will fail. default = 31
@@ -68,6 +70,10 @@ REDIS_MANAGER_ON = "false"
 REDIS_URL = ""
 # The URL for the Redis server, offered by Redislab
 REDISCLOUD_URL
+# Number of members deleted in bulk from a regular bucket. default = 2000
+REG_BUCKET_MEMBER_BULK_DEL_SIZE
+# Number of members deleted in bulk from the Global bucket. default = 2000
+GLOBAL_BUCKET_MEMBER_BULK_DEL_SIZE
 ```
 
 ## Usage Examples
