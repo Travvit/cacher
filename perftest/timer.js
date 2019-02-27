@@ -26,6 +26,16 @@ class Timer {
         this.lastRecTime = now;
         return diff;
     }
+
+    /**
+     * Sleeps for the specified amount of time.
+     * @param {number} ms the sleep time in milliseconds
+     */
+    sleep(ms) {
+        return new Promise((resolve) => {
+            setTimeout(resolve, ms);
+        });
+    }
 }
 
 module.exports = new Timer();
