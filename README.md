@@ -18,9 +18,10 @@ What is required is a reliable caching mechanism that allows the developer to ta
 ## Features
 1.  Customizable expiry time per cached object, or per method, of a cached object.
 2.  Simple caching API.
-3.  Backing service abstracted away, but configurable via environment variables.
+3.  Storage Manager abstracted away, but configurable via environment variables.
 4.  Simultaneous eviction of all invalid cached data, when data source is updated.
 5.  Prevent parts of an object from getting cached.
+6.  Runs a Garbage Collector for the Redis Storage Manager.
 
 ## Core concepts
 In order to cache an object, and make it consumable by other parts of the code, we would need to cache the results of the individual methods within that object. Therefore we'd need to control the caching of the individual methods. Generally a class should have the following types of public methods:
@@ -74,6 +75,16 @@ REDISCLOUD_URL
 REG_BUCKET_MEMBER_BULK_DEL_SIZE
 # Number of members deleted in bulk from the Global bucket. default = 2000
 GLOBAL_BUCKET_MEMBER_BULK_DEL_SIZE
+# Enables the garbage collector for RedisStorageManager. default = "false"
+REDIS_GC_ON
+# GC Master lease renew duration in milliseconds. default 30K
+REDIS_GC_INTERVAL
+# The percentage of CPU usage the is permissible for GC. default 50
+CPU_LOAD_CUTOFF
+# Number of members deleted in bulk from a regular bucket during GC. default = 2000
+REG_BUCKET_MEMBER_BULK_GC_SIZE
+# Number of members deleted in bulk from the Global bucket during GC. default = 1000
+GLOBAL_BUCKET_MEMBER_BULK_GC_SIZE
 ```
 
 ## Usage Examples
@@ -135,7 +146,7 @@ const { CacheFactory } = require('tz-cacher');
 
 const cacheableObject = new TestClass();
 
-const cachedObject = await CacheFactory.cachify();
+const cachedObject = await CacheFactory.cachify(cacheableObject);
 
 // Call the methods of the cached object
 cachedObject.ttlBucketsMethod('Tester');
@@ -166,7 +177,7 @@ Mutators, passthroughs and custom ttl methods and method responses stored
 in special buckets are specified here. Default TTLs and buckets are also
 specified here.
 
-### CacheFactory.cachify()
+### CachedObjectFactory.cachify()
 
 Returns a new cachified object.
 
