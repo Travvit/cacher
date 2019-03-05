@@ -8,7 +8,7 @@ class TestClass extends Cacheable {
     }
     getOptions() {
         return {
-            ttl: 100,
+            ttl: 27,
             buckets: ['test-bucket'],
             methods: {
                 passthroughMethod: {

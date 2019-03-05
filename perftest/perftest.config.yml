@@ -1,0 +1,22 @@
+config:
+  # Path to the scenarios directory
+  base: "./perftest/scenarios"
+  # Transports are used to send reports off to various destinations
+  transports: [ file ]
+  # Formatters are used to format the result of the tests.
+  formatters:
+    - name: JSONFormatter
+    - name: CSVFormatter
+scenarios:
+  # - name: "Load, read and purge data associated with only one bucket."
+  #   base: "oneBucket"
+  # - name: "Load, read and purge data associated with two buckets."
+  #   base: "twoBuckets"
+  # - name: "Load, read and purge data associated with three buckets."
+  #   base: "threeBuckets"
+  # - name: "Load, read and purge data associated with four buckets."
+  #   base: "fourBuckets"
+  # - name: "Load, read and purge data associated with five buckets."
+  #   base: "fiveBuckets"
+  - name: "Load, read and garbage collect on two buckets."
+    base: "twoBucketsGC"

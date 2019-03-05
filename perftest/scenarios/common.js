@@ -1,15 +1,24 @@
 const { promisify } = require('util');
-require('tz-config');
+// require('tz-config');
 
 process.env.NODE_ENV = 'development';
 process.env.APP_NAME = 'tz-cacher-dev';
 process.env.REDIS_MANAGER_ON = 'true';
+process.env.REDISCLOUD_URL = 'redis://localhost:6379';
+
+// process.env.REDIS_MANAGER_ON = 'true';
+process.env.REDIS_GC_ON = 'true';
+// process.env.NODE_ENV = 'development';
+// process.env.APP_NAME = 'tz-cacher-dev';
 // process.env.REDISCLOUD_URL = 'redis://localhost:6379';
+// process.env.REDISCLOUD_URL = 'redis://rediscloud:H8vLg5rDpefM8vsCVwJzVW3aBIYV7kDE@redis-11742.c114.us-east-1-4.ec2.cloud.redislabs.com:11742';
+// process.env.REDIS_URL = 'redis://h:p5a5ae4f1c205595206d051d525475a143bc4408a9b9c56dcf805c7fb4ad44a20@ec2-54-144-116-122.compute-1.amazonaws.com:6559';
 
 const redis = require('redis');
 const logger = require('tz-logger');
+const EventEmitter = require('events');
 
-let timer = require('../timer.js');
+let timer = require('../../lib/utils/timer.js');
 let cacheableObject = require('../fixtures/testClass.stub.js');
 // Load assembler
 const CacheAssembler = require('../../lib/cache.assembler.js');
@@ -31,6 +40,7 @@ let numBuckets;
 let timeToLoad; // ms
 let timeToRead; // ms
 let timeToPurge; // ms
+let timeToCollect;
 let memUsed;
 // Data captured
 let stats = {
@@ -39,6 +49,7 @@ let stats = {
     timeToLoad,
     timeToRead,
     timeToPurge,
+    timeToCollect,
     memUsed
 };
 
@@ -88,6 +99,31 @@ function getPurgeStats() {
     });
 }
 
+const bucketDeleteEmitter = new EventEmitter();
+
+function getGCStats() {
+    let start = new Date();
+    return new Promise((resolve, reject) => {
+        bucketDeleteEmitter.on('GLOBAL', () => {
+            resolve(new Date() - start);
+        });
+        // process.on('message', (message) => {
+        //     logger.log(message);
+        //     if (message.endsWith('GC completed.')) {
+        //         resolve(new Date() - start);
+        //     }
+        // });
+    });
+}
+
+// async function waitUntilGlobalBucketDelete() {
+//     return new Promise(async (resolve, reject) => {
+//         bucketDeleteEmitter.on('GLOBAL', () => {
+//             resolve('GLOBAL');
+//         });
+//     });
+// }
+
 function getMemUsage(stats) {
     return stats.match(/used_memory_human:(.+)/)[1];
 }
@@ -125,13 +161,15 @@ const sendCommandAsync = promisify(redisRWClient.send_command).bind(redisRWClien
 const infoAsync = promisify(redisRWClient.info).bind(redisRWClient);
 const dbsizeAsync = promisify(redisRWClient.dbsize).bind(redisRWClient);
 
-redisPSClient.subscribe(`${APP_NAME}_${APP_ENV}_bucket_del`);
+redisPSClient.subscribe(`${APP_ENV}:bucket_del`);
 redisPSClient.on('message', async (channel, message) => {
     // Respond to messages that relate to bucket deletion channel
     switch (channel) {
-        case `${APP_NAME}_${APP_ENV}_bucket_del`:
-            if (message.endsWith('-GLOBAL')) {
-                allBucketsDeleted = true;
+        case `${APP_ENV}:bucket_del`:
+            // logger.log(`channel: ${channel}, message: ${message}`);
+            if (message.endsWith('GLOBAL')) {
+                bucketDeleteEmitter.emit('GLOBAL');
+                // allBucketsDeleted = true;
             }
             break;
         default:
@@ -175,6 +213,10 @@ module.exports = {
     timeToRead,
     getReadStats,
     timeToPurge,
+    timeToCollect,
     getPurgeStats,
-    stats
+    getGCStats,
+    stats,
+    APP_NAME,
+    APP_ENV
 };
