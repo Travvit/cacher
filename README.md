@@ -115,9 +115,21 @@ class TestClass extends Cacheable {
                     ttl: 15,            // This method is cached and has a custom TTL, and a specific list of buckets it's associated with.
                     buckets: ['test-bucket', 'test-bucket-2']
                 },
+                ttlBucketsMethodAll: {
+                    ttl: 15,            // This method is cached and has a custom TTL, and allows the key to be saved in all buckets of current app.
+                    buckets: ['*']
+                },
+                ttlBucketsMethodOtherApp: {
+                    ttl: 15,            // This method is cached and has a custom TTL, and allows the key to be saved in buckets of other apps.
+                    buckets: ['app-1.bucket-1', 'app-2.*']
+                },
                 mutatorMethod: {
                     mutator: true,      // This method is a mutator. It's values are never cached, and all buckets associated with it are cleared upon execution.
                     buckets: ['test-bucket', 'test-bucket-2']
+                },
+                mutatorMethodAll: {
+                    mutator: true,      // This method is a mutator. It's values are never cached, and all buckets associated with the current app are cleared upon execution.
+                    buckets: ['*']
                 }
             }
         };
@@ -131,8 +143,17 @@ class TestClass extends Cacheable {
     ttlBucketsMethod(name) {
         return `TTL Buckets: Hello ${name}!`;
     }
+    ttlBucketsMethodAll(name) {
+        return `TTL All Buckets: Hello ${name}!`;
+    }
+    ttlBucketsMethodOtherApp(name) {
+        return `TTL Other App Buckets: Hello ${name}!`;
+    }
     mutatorMethod(name) {
         return `Mutator: Hello ${name}!`;
+    }
+    mutatorMethodAll(name) {
+        return `Mutator All: Hello ${name}!`;
     }
     unconfiguredMethod(name) {
         return `Unconfigured: Hello ${name}!`;
