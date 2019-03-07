@@ -2,7 +2,7 @@ const { promisify } = require('util');
 // require('tz-config');
 
 process.env.NODE_ENV = 'development';
-process.env.APP_NAME = 'tz-cacher-dev';
+process.env.APP_NAME = 'tz-cacher';
 process.env.REDIS_MANAGER_ON = 'true';
 // process.env.REDISCLOUD_URL = 'redis://localhost:6379';
 
@@ -24,9 +24,9 @@ let cacheableObject = require('../fixtures/testClass.stub.js');
 const CacheAssembler = require('../../lib/cache.assembler.js');
 
 /* Constants and flags */
-const APP_NAME = process.env.APP_NAME ? process.env.APP_NAME : 'tz-permissions';
+const APP_NAME = process.env.APP_NAME ? process.env.APP_NAME : 'tz-cacher';
 /* The application envionment. */
-const APP_ENV = process.env.NODE_ENV || 'dev';
+const NODE_ENV = process.env.NODE_ENV || 'development';
 // const BUCKET_PREFIX = `BUCKET-${APP_NAME}`;
 const MAX_RETRY_TIME = process.env.REDIS_MAX_RETRY_TIME ? parseInt(process.env.REDIS_MAX_RETRY_TIME, 10) : 30000;
 const MAX_RETRY_ATTEMPTS = process.env.REDIS_MAX_RETRY_ATTEMPTS ? parseInt(process.env.REDIS_MAX_RETRY_ATTEMPTS, 10) : 31;
@@ -161,11 +161,11 @@ const sendCommandAsync = promisify(redisRWClient.send_command).bind(redisRWClien
 const infoAsync = promisify(redisRWClient.info).bind(redisRWClient);
 const dbsizeAsync = promisify(redisRWClient.dbsize).bind(redisRWClient);
 
-redisPSClient.subscribe(`${APP_ENV}:bucket_del`);
+redisPSClient.subscribe(`${NODE_ENV}:bucket_del`);
 redisPSClient.on('message', async (channel, message) => {
     // Respond to messages that relate to bucket deletion channel
     switch (channel) {
-        case `${APP_ENV}:bucket_del`:
+        case `${NODE_ENV}:bucket_del`:
             // logger.log(`channel: ${channel}, message: ${message}`);
             if (message.endsWith('GLOBAL')) {
                 bucketDeleteEmitter.emit('GLOBAL');
@@ -218,5 +218,5 @@ module.exports = {
     getGCStats,
     stats,
     APP_NAME,
-    APP_ENV
+    NODE_ENV
 };

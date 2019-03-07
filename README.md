@@ -55,20 +55,20 @@ You are allowed to set the following configuration directives when using the cac
 **NOTE** Config variables are associated with the application's config variables. 
 
 ```bash
-# The name of the application, default = "tz-cacher-dev"
-APP_NAME = "tz-cacher-dev"
-# The application envionment. default = "dev"
-APP_ENV = "dev"
+# The name of the application, default = "tz-cacher"
+APP_NAME
+# The application environment. default = "development"
+NODE_ENV
 # The maximum retry time in milliseconds after which retry attempts will fail., default = 30000
-MAX_RETRY_TIME = 30000
+MAX_RETRY_TIME
 # The maximum retry times after which retry attempts will fail. default = 31
-MAX_RETRY_ATTEMPTS = 31
+MAX_RETRY_ATTEMPTS
 # The frequency in milliseconds with which connection retry is attempted. default = 1000
-REDIS_RETRY_FREQ = 1000
+REDIS_RETRY_FREQ
 # The flag that allows Redis caching to be turned off. default = false
-REDIS_MANAGER_ON = "false"
+REDIS_MANAGER_ON
 # The URL for the Redis server, default = "redis://localhost:6379"
-REDIS_URL = ""
+REDIS_URL
 # The URL for the Redis server, offered by Redislab
 REDISCLOUD_URL
 # Number of members deleted in bulk from a regular bucket. default = 2000

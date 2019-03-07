@@ -20,7 +20,7 @@ let {
     getGCStats,
     sleep,
     APP_NAME,
-    APP_ENV
+    NODE_ENV
 } = require('../common.js');
 
 let cachedObjectFactory;
@@ -30,7 +30,7 @@ async function initTests() {
     // cacheFactory = CacheAssembler.getCacheFactory();
     // cachedObject = await cacheFactory.cachify(cacheableObject);
 
-    cachedObjectFactory = CacheAssembler.getCachedObjectFactory({ app: 'tz-cacher-dev', env: APP_ENV, hashFactoryName: 'AppEnv', storageName: 'Redis' });
+    cachedObjectFactory = CacheAssembler.getCachedObjectFactory({ app: 'tz-cacher-dev', env: NODE_ENV, hashFactoryName: 'AppEnv', storageName: 'Redis' });
     // hashFactory = CacheAssembler.getHashFactory('AppEnv');
     cachedObject = await cachedObjectFactory.cachify(cacheableObject);
     // Adding 5 seconds delay
