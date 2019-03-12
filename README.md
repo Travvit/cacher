@@ -1,6 +1,6 @@
 # tz-cacher
 
-1.5.0
+2.0.0
 
 This library enables caching objects that implement the `Cacheable` interface. It does the hard work for you so you don't have to! 😎
 
@@ -21,7 +21,8 @@ What is required is a reliable caching mechanism that allows the developer to ta
 3.  Storage Manager abstracted away, but configurable via environment variables.
 4.  Simultaneous eviction of all invalid cached data, when data source is updated.
 5.  Prevent parts of an object from getting cached.
-6.  Runs a Garbage Collector for the Redis Storage Manager.
+6.  Ability to utilize cached entities within a distribute environment.
+7.  Runs a Garbage Collector for the Redis Storage Manager.
 
 ## Core concepts
 In order to cache an object, and make it consumable by other parts of the code, we would need to cache the results of the individual methods within that object. Therefore we'd need to control the caching of the individual methods. Generally a class should have the following types of public methods:
@@ -34,7 +35,7 @@ In order to cache an object, and make it consumable by other parts of the code, 
 
 The library also allows the instantaneous invalidation of cached objects when a method updates the source of the underlying data. This is done my tracking the cached values within a specific group of the source, called a `bucket`. When the source of a bucket is updated, all data associated with that bucket is then considered invalid and are thus purged from the cache.
 
-For example, when refering to a DAL object, the source of the data for the accessor methods of the DAL is the data table being accessed. By tying the DAL object to the table as a bucket, we can remove the stale data whenever we call an upsert method via the DAL.
+For example, when referring to a DAL object, the source of the data for the accessor methods of the DAL is the data table being accessed. By tying the DAL object to the table as a bucket, we can remove the stale data whenever we call an upsert method via the DAL.
 
 Similar schemes may be applied to any `Cacheable` object.
 
@@ -44,33 +45,41 @@ Please note that a "cachified" object would still perform as expected, if the ba
 This is a Zayo specific library managed on our gemfury repo. `tz-cacher` can simply be installed with [npm](https://www.npmjs.com/):
 
 ```bash
-npm install --save tz-cacher
+npm install tz-cacher
 ```
 
 ## Configuration
-This library currently supports Redis as a backing service. Other backing services may be added in the future.
+This library currently supports Redis as a Storage Manager. Other Storage Managers may be added in the future.
 
 You are allowed to set the following configuration directives when using the cacher.
 
 **NOTE** Config variables are associated with the application's config variables. 
 
 ```bash
-# The name of the application, default = "tz-cacher"
-APP_NAME
 # The application environment. default = "development"
 NODE_ENV
-# The maximum retry time in milliseconds after which retry attempts will fail., default = 30000
-MAX_RETRY_TIME
-# The maximum retry times after which retry attempts will fail. default = 31
-MAX_RETRY_ATTEMPTS
-# The frequency in milliseconds with which connection retry is attempted. default = 1000
-REDIS_RETRY_FREQ
+# The name of the application, default = "tz-cacher"
+APP_NAME
+# Minimum TTL allowed for a cached entity. default = 5s
+MIN_TTL
+# Maximum TTL allowed for a cached entity. default = 24hrs
+MAX_TTL
+# Maximum length of the bucket name including the name of the app if any. default = 50
+MAX_BUCKET_NAME_SIZE
+# Maximum buckets allowed per cached item. default = 25
+MAX_BUCKETS
 # The flag that allows Redis caching to be turned off. default = false
 REDIS_MANAGER_ON
 # The URL for the Redis server, default = "redis://localhost:6379"
 REDIS_URL
 # The URL for the Redis server, offered by Redislab
 REDISCLOUD_URL
+# The maximum retry time in milliseconds after which retry attempts will fail. default = 30K
+REDIS_MAX_RETRY_TIME
+# The maximum retry times after which retry attempts will fail. default = 31
+REDIS_MAX_RETRY_ATTEMPTS
+# The frequency in milliseconds with which connection retry is attempted. default = 1000
+REDIS_RETRY_FREQ
 # Number of members deleted in bulk from a regular bucket. default = 2000
 REG_BUCKET_MEMBER_BULK_DEL_SIZE
 # Number of members deleted in bulk from the Global bucket. default = 2000
@@ -104,34 +113,42 @@ class TestClass extends Cacheable {
         return {
             ttl: 100,                   // Default TTL for the class objects
             buckets: ['test-bucket'],   // Default buckets for the class objects
-            methods: {
-                passthroughMethod: {
-                    passthrough: true   // This is a passthrough method, it's values are not cached.
-                },
-                ttlMethod: {
-                    ttl: 15             // This method is cached and has a custom TTL.
-                },
-                ttlBucketsMethod: {
-                    ttl: 15,            // This method is cached and has a custom TTL, and a specific list of buckets it's associated with.
-                    buckets: ['test-bucket', 'test-bucket-2']
-                },
-                ttlBucketsMethodAll: {
-                    ttl: 15,            // This method is cached and has a custom TTL, and allows the key to be saved in all buckets of current app.
-                    buckets: ['*']
-                },
-                ttlBucketsMethodOtherApp: {
-                    ttl: 15,            // This method is cached and has a custom TTL, and allows the key to be saved in buckets of other apps.
-                    buckets: ['app-1.bucket-1', 'app-2.*']
-                },
-                mutatorMethod: {
-                    mutator: true,      // This method is a mutator. It's values are never cached, and all buckets associated with it are cleared upon execution.
-                    buckets: ['test-bucket', 'test-bucket-2']
-                },
-                mutatorMethodAll: {
-                    mutator: true,      // This method is a mutator. It's values are never cached, and all buckets associated with the current app are cleared upon execution.
-                    buckets: ['*']
-                }
-            }
+            methods: [{
+                name: 'passthroughMethod', // This is a passthrough method, it's values are not cached.
+                type: 'passthrough'
+            }, {
+                name: 'ttlMethod',      // This method is cached and has a custom TTL.
+                type: 'cacheable',
+                ttl: 15
+            }, {
+                name: 'ttlBucketsMethod',   // This method is cached and has a custom TTL,
+                                            // and a specific list of buckets it's associated with.
+                type: 'cacheable',
+                ttl: 15,
+                buckets: ['test-bucket', 'test-bucket-2']
+            }, {
+                name: 'ttlBucketsMethodAll',    // This method is cached and has a custom TTL, and allows
+                                                // the key to be saved in all buckets of current app.
+                type: 'cacheable',
+                ttl: 15,
+                buckets: ['*']
+            }, {
+                name: 'ttlBucketsMethodOtherApp',   // This method is cached and has a custom TTL, and
+                                                    // allows the key to be saved in buckets of other apps.
+                type: 'cacheable',
+                ttl: 15,
+                buckets: ['app-1.bucket-1', 'app-2.*']
+            }, {
+                name: 'mutatorMethod',  // This method is a mutator. It's values are never cached, and
+                                        // all buckets associated with it are cleared upon execution.
+                type: 'mutator',
+                buckets: ['test-bucket', 'test-bucket-2']
+            }, {
+                name: 'mutatorMethodAll',   // This method is a mutator. It's values are never cached, and all
+                                            // buckets associated with the current app are cleared upon execution.
+                type: 'mutator',
+                buckets: ['*']
+            }]
         };
     }
     passthroughMethod(name) {
