@@ -1,0 +1,7 @@
+[
+    { "numObjects": 100 },
+    { "numObjects": 1000 },
+    { "numObjects": 5000 },
+    { "numObjects": 25000 },
+    { "numObjects": 100000 }
+]

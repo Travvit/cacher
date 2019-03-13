@@ -2,252 +2,136 @@
 
 ### Table of Contents
 
--   [CacheHandlerFactory][1]
-    -   [create][2]
-        -   [Parameters][3]
--   [CacheHandler][4]
-    -   [Parameters][5]
-    -   [apply][6]
-        -   [Parameters][7]
--   [Cacheable][8]
-    -   [getOptions][9]
--   [CachedObject][10]
-    -   [Parameters][11]
-    -   [cachify][12]
+-   [getStorageManager][1]
+    -   [Parameters][2]
+-   [getCacher][3]
+    -   [Parameters][4]
+-   [getHashFactory][5]
+    -   [Parameters][6]
+-   [getCachedObjectFactory][7]
+    -   [Parameters][8]
+-   [PassthroughMethodHandlerFactory][9]
+    -   [create][10]
+-   [PassthroughMethodHandler][11]
+    -   [apply][12]
         -   [Parameters][13]
--   [Cacher][14]
-    -   [Parameters][15]
-    -   [getCachedValue][16]
-        -   [Parameters][17]
-    -   [setCachedValue][18]
-        -   [Parameters][19]
-    -   [purgeBuckets][20]
+-   [CachedMethodHandlerFactory][14]
+    -   [create][15]
+        -   [Parameters][16]
+-   [MethodHandlerFactory][17]
+-   [CachedMethodHandler][18]
+    -   [Parameters][19]
+    -   [apply][20]
         -   [Parameters][21]
--   [HandlerFactory][22]
+-   [MutatorMethodHandlerFactory][22]
     -   [create][23]
--   [HashFactory][24]
-    -   [Parameters][25]
-    -   [create][26]
-        -   [Parameters][27]
--   [MutatorHandlerFactory][28]
-    -   [create][29]
-        -   [Parameters][30]
--   [MutatorHandler][31]
-    -   [Parameters][32]
-    -   [apply][33]
-        -   [Parameters][34]
--   [PassthroughHandlerFactory][35]
-    -   [create][36]
--   [PassthroughHandler][37]
-    -   [apply][38]
-        -   [Parameters][39]
--   [RedisManager][40]
+        -   [Parameters][24]
+-   [MutatorMethodHandler][25]
+    -   [Parameters][26]
+    -   [apply][27]
+        -   [Parameters][28]
+-   [RedisStorageManager][29]
+    -   [getCachedValue][30]
+        -   [Parameters][31]
+    -   [setCachedValue][32]
+        -   [Parameters][33]
+    -   [purgeBuckets][34]
+        -   [Parameters][35]
+    -   [initGarbageCollector][36]
+    -   [handleGCMessage][37]
+        -   [Parameters][38]
+-   [on][39]
+-   [StorageManager][40]
     -   [getCachedValue][41]
         -   [Parameters][42]
     -   [setCachedValue][43]
         -   [Parameters][44]
     -   [purgeBuckets][45]
         -   [Parameters][46]
+-   [AppEnvHashFactory][47]
+    -   [Parameters][48]
+    -   [create][49]
+        -   [Parameters][50]
+-   [HashFactory][51]
+-   [EnvHashFactory][52]
+    -   [Parameters][53]
+    -   [create][54]
+        -   [Parameters][55]
+-   [CachedObjectFactory][56]
+    -   [Parameters][57]
+    -   [create][58]
+        -   [Parameters][59]
+    -   [cachify][60]
+        -   [Parameters][61]
+    -   [validCacheOptions][62]
+        -   [Parameters][63]
+-   [Factory][64]
+    -   [create][65]
+-   [Cacheable][66]
+    -   [getOptions][67]
+-   [Cacher][68]
+    -   [Parameters][69]
+    -   [getCachedValue][70]
+        -   [Parameters][71]
+    -   [setCachedValue][72]
+        -   [Parameters][73]
+    -   [purgeBuckets][74]
+        -   [Parameters][75]
 
-## CacheHandlerFactory
+## getStorageManager
 
-**Extends Handlerfactory**
-
-An implementation of the HandlerFactory that created a CacheHandler.
-
-### create
-
-Creates a cache handler.
-
-#### Parameters
-
--   `cacher` **[object][47]** the cacher used to cache the method responses.
--   `hashFactory` **[object][47]** the method that generates the key for the cached value.
-
-Returns **any** a cache handler.
-
-## CacheHandler
-
-Cache Handlers are proxy handlers for methods who's responses are cached.
-
-### Parameters
-
--   `cacher` **[object][47]** the cacher used to cache the method responses.
--   `hashFactory` **[object][47]** the method that generates the key for the cached value.
-
-### apply
-
-This method abstracts the cached method call.
-
-#### Parameters
-
--   `target` **any** the cached method.
--   `thisArg` **any** the object who's method is cached.
--   `argumentsList` **any** the list of arguments passed to the cached method.
-
-Returns **any** the result of the cached method.
-
-## Cacheable
-
-Abastract class that every cacheable object must inherit in order to be cached.
-
-### getOptions
-
-Returns **any** an object that defines caching options for individual methods.
-Mutators, passthroughs and custom ttl methods and method responses stored
-in special buckets are specified here. Default TTLs and buckets are also
-specified here.
-
-## CachedObject
-
-This class allow the caching of any arbitrary objects. The class essentially caches the output of
-a the member methods within a Cache server. The class only offers a constructor. All cache management
-is performed using private members of this module and an options argument to the constructor.
-`NOTE:` constructors are never cached.
+Returns a storage manager. Currently RedisStorageManager is the only available manager.
+Additional StorageManagers may be provided in the future.
 
 ### Parameters
 
--   `cacher` **[object][47]** the wrapper for the cacher object.
--   `hashFactory` **[object][47]** the hash factory.
--   `cacheHandlerFactory` **[object][47]** the factory to create a cacheHandler.
--   `passthroughHandlerFactory` **[object][47]** the factory to create a passthroughHandler.
--   `mutatorHandlerFactory` **[object][47]** the factory to create a mutatorHandler.
+-   `name` **[string][76]** the name of the cache storage.
 
-### cachify
+## getCacher
 
-Returns a new cachified object.
-
-#### Parameters
-
--   `cacheableObject` **any** the object being cached.
-
-Returns **[object][47]** returns the cached version of the cacheableObject.
-
-## Cacher
-
-The `Cacher` object exposes some general mathods necessary to us a caching system.
-This decouples the caching implementation from the general caching functions.
+Returns an instance of a cacher.
 
 ### Parameters
 
--   `cacheManager`  
--   `an` **[Object][47]** object that represents a cache manager, such as Redis.
-    The cache manager abstracts the inner functions of the caching client API.
+-   `app` **[string][76]** the name of the app.
+-   `env` **[string][76]** the name of the environment the app is running in.
+-   `storageName` **[string][76]** the name of the cache storage.
 
-### getCachedValue
+## getHashFactory
 
-Returns the cached value.
-
-#### Parameters
-
--   `key` **[string][48]** the key for the cached value.
-
-Returns **any** returns the cached value.
-
-### setCachedValue
-
-Saves a given value into the cache with the associated key.
-
-#### Parameters
-
--   `cachedObject` **[string][48]** the name of the object.
--   `cachedMethod` **[string][48]** name of the method whos response is being cached.
--   `key` **[string][48]** the key for the cached value.
--   `value` **any** the cached value.
--   `ttl` **[number][49]** the TTL for the cached value.
--   `buckets` **[Array][50]&lt;[string][48]>** a list of buckets.
-
-Returns **any** returns a response from the cache handler after the value is cached.
-
-### purgeBuckets
-
-Invalidates the keys from the associated buckets.
-
-#### Parameters
-
--   `buckets` **[Array][50]&lt;[string][48]>** a list of buckets.
-
-Returns **[boolean][51]** returns whether the buckets were purged or not.
-
-## HandlerFactory
-
-Abastract class that every HandlerFactories object must inherit in order to create handler factories.
-
-### create
-
-Returns **any** an object that represents a handler factory.
-
-## HashFactory
-
-This is used to generate hash values.
+Returns a hash factory.
 
 ### Parameters
 
--   `app` **any** the name of the Application. Default value is extracted from environment variables.
--   `env` **any** the name of the Environment. Default value is extracted from environment variables.
+-   `name` **[string][76]** the name of the hash factory
 
-### create
+## getCachedObjectFactory
 
-This method generates the Redis hash key.
-
-#### Parameters
-
--   `method` **any** the name of the method invoking the cache. Default value is extracted from environment variables.
--   `params` **...any** the parameters passed on to the invoked method.
-
-Returns **[string][48]** the hash key necessary for a cache key.
-
-## MutatorHandlerFactory
-
-**Extends Handlerfactory**
-
-An implementation of the HandlerFactory that created a MutatorHandler.
-
-### create
-
-Creates a mutator handler.
-
-#### Parameters
-
--   `cacher` **[object][47]** the cacher used to cache the method responses.
-
-Returns **any** a mutator handler.
-
-## MutatorHandler
-
-Motator Handlers are proxy handlers for methods that mutate the source of truth of a cached object.
+This method returns a cache factory.
 
 ### Parameters
 
--   `cacher` **[object][47]** 
+-   `options` **any**  (optional, default `{}`)
+    -   `options.app` **[string][76]** the name of the app.
+    -   `options.env` **[string][76]** the name of the environment.
+    -   `options.hashFactoryName` **[string][76]** the name of the hash factory.
+    -   `options.storageName` **[string][76]** the name of the storage manager.
 
-### apply
+## PassthroughMethodHandlerFactory
 
-This method abstracts the mutator method call.
-
-#### Parameters
-
--   `target` **any** the method that performs a data mutation.
--   `thisArg` **any** the object who's method is cached.
--   `argumentsList` **any** the list of arguments passed to the cached method.
-
-Returns **any** the result of the mutator method.
-
-## PassthroughHandlerFactory
-
-**Extends Handlerfactory**
+**Extends MethodHandlerFactory**
 
 An implementation of the HandlerFactory that created a PassthroughHandler.
 
 ### create
 
-Creates a passthrough handler.
+Creates a passthrough method handler.
 
-Returns **any** a passthrough handler.
+Returns **any** a passthrough method handler.
 
-## PassthroughHandler
+## PassthroughMethodHandler
 
-Passthrough Handlers are proxy handlers for methods who's responses are not cached.
+Passthrough Method Handlers are proxy handlers for methods who's responses are not cached.
 
 ### apply
 
@@ -261,11 +145,93 @@ This method abstracts the passthrough method call.
 
 Returns **any** the result of the passthrough method.
 
-## RedisManager
+## CachedMethodHandlerFactory
 
-This class uses a Redis client library to manage caching of objects within a Redis server.
-The connection to the Redis server is configured based on environment variables.
-The RedisManager is exported as a Singleton from this module.
+**Extends MethodHandlerFactory**
+
+An implementation of the HandlerFactory that created a CachedMethodHandler.
+
+### create
+
+Creates a cached method handler.
+
+#### Parameters
+
+-   `cacher` **any** the cacher used to cache the method responses.
+-   `hashFactory` **any** the method that generates the key for the cached value.
+
+Returns **any** a cache handler.
+
+## MethodHandlerFactory
+
+**Extends Factory**
+
+Abastract class that every MethodHandlerFactories object must inherit in order to create method handler factories.
+
+## CachedMethodHandler
+
+Cached Method Handlers are proxy handlers for methods who's responses are cached.
+
+### Parameters
+
+-   `cacher` **any** the cacher used to cache the method responses.
+-   `hashFactory` **any** the method that generates the key for the cached value.
+
+### apply
+
+This method abstracts the cached method call.
+
+#### Parameters
+
+-   `target` **any** the cached method.
+-   `thisArg` **any** the object who's method is cached.
+-   `argumentsList` **any** the list of arguments passed to the cached method.
+
+Returns **any** the result of the cached method.
+
+## MutatorMethodHandlerFactory
+
+**Extends MethodHandlerFactory**
+
+An implementation of the HandlerFactory that created a MutatorHandler.
+
+### create
+
+Creates a mutator handler.
+
+#### Parameters
+
+-   `cacher` **any** the cacher used to cache the method responses.
+
+Returns **any** a mutator handler.
+
+## MutatorMethodHandler
+
+Motator Method Handlers are proxy handlers for methods that mutate the source of truth of a cached object.
+
+### Parameters
+
+-   `cacher` **any** 
+
+### apply
+
+This method abstracts the mutator method call.
+
+#### Parameters
+
+-   `target` **any** the method that performs a data mutation.
+-   `thisArg` **any** the object who's method is cached.
+-   `argumentsList` **any** the list of arguments passed to the cached method.
+
+Returns **any** the result of the mutator method.
+
+## RedisStorageManager
+
+**Extends StorageManager**
+
+This is a StorageManager that uses a Redis client library to manage caching objects within a
+Redis server. The connection to the Redis server is configured based on environment variables.
+The `RedisStorageManager` is exposed as a Singleton.
 
 ### getCachedValue
 
@@ -273,9 +239,9 @@ Returns a Promise that resolves to an object saved in cache or a null value.
 
 #### Parameters
 
--   `key` **[string][48]** the Redis cache key.
+-   `key` **[string][76]** the Redis cache key.
 
-Returns **[Promise][52]** returns a promise that resolves to a cached object.
+Returns **[Promise][77]** returns a promise that resolves to a cached object.
 
 ### setCachedValue
 
@@ -295,14 +261,17 @@ ttl
 
 #### Parameters
 
--   `cachedObject` **[string][48]** the object being cached.
--   `cachedMethod` **[string][48]** the name of the method whos value is being cached.
--   `key` **[string][48]** the Redis cache key.
--   `value` **any** the value that needs to be strinigfied.
--   `ttl` **[number][49]** the TTL for the cache entry in seconds.
--   `buckets` **[Array][50]&lt;[string][48]>** a list of buckets.
+-   `options` **any** 
+    -   `options.app` **[string][76]** the name of the app or library asking to purge buckets.
+    -   `options.env` **[string][76]** the name of the environment the applicaiton is running in.
+    -   `options.key` **[string][76]** the Redis cache key.
+    -   `options.cachedObject` **[string][76]** the object being cached.
+    -   `options.cachedMethod` **[string][76]** the name of the method whos value is being cached.
+    -   `options.value` **any** the value that needs to be strinigfied.
+    -   `options.ttl` **[number][78]** the TTL for the cache entry in seconds.
+    -   `options.buckets` **[Array][79]&lt;[string][76]>** a list of buckets.
 
-Returns **[Promise][52]** returns a promise that resolves to a status message from Redis.
+Returns **[Promise][77]** returns a promise that resolves to a status message from Redis.
 
 ### purgeBuckets
 
@@ -310,89 +279,310 @@ Invalidates the keys from the associated buckets.
 
 #### Parameters
 
--   `buckets` **[Array][50]&lt;[string][48]>** a list of buckets.
+-   `options` **any** 
+    -   `options.app` **[string][76]** the name of the app or library asking to purge buckets.
+    -   `options.env` **[string][76]** the name of the environment the applicaiton is running in.
+    -   `options.buckets` **[Array][79]&lt;[string][76]>** a list of buckets.
 
-Returns **[boolean][51]** returns `true` for success, and `false` for failure.
+Returns **[boolean][80]** returns `true` for success, and `false` for failure.
 
-[1]: #cachehandlerfactory
+### initGarbageCollector
 
-[2]: #create
+Initialize the garbage collector
 
-[3]: #parameters
+### handleGCMessage
 
-[4]: #cachehandler
+Method that emits the message that was sent by the garbage collector.
 
-[5]: #parameters-1
+#### Parameters
 
-[6]: #apply
+-   `message` **[string][76]** the message sent by the garbage collector.
 
-[7]: #parameters-2
+## on
 
-[8]: #cacheable
+Perform cleanup here because the process is about to terminate.
 
-[9]: #getoptions
+## StorageManager
 
-[10]: #cachedobject
+**Extends EventEmitter**
 
-[11]: #parameters-3
+Abstract class that defines a cached object storage manager. A StorageManager is also an EventEmitter.
 
-[12]: #cachify
+### getCachedValue
+
+Method used to get a cached value based on the key provided.
+
+#### Parameters
+
+-   `key` **[string][76]** 
+
+### setCachedValue
+
+Method used to set a cachable value into storage.
+
+#### Parameters
+
+-   `options` **any** 
+
+### purgeBuckets
+
+Purge the contents of the buckets and the associated keys from storage.
+
+#### Parameters
+
+-   `options` **any** 
+
+## AppEnvHashFactory
+
+**Extends HashFactory**
+
+This is used to generate hash values.
+
+### Parameters
+
+-   `app` **[string][76]** the name of the Application. Default value is extracted from environment variables.
+-   `env` **[string][76]** the name of the Environment. Default value is extracted from environment variables.
+
+### create
+
+This method generates the Redis hash key.
+
+#### Parameters
+
+-   `className` **[string][76]** the name of the class.
+-   `method` **[string][76]** the name of the method invoking the cache. Default value is extracted from environment variables.
+-   `params` **...any** the parameters passed on to the invoked method.
+
+Returns **[string][76]** the hash key necessary for a cache key.
+
+## HashFactory
+
+**Extends Factory**
+
+This is an abstract class that used to generate hash values.
+
+## EnvHashFactory
+
+**Extends HashFactory**
+
+This is used to generate hash values.
+
+### Parameters
+
+-   `app` **any** the name of the Application. Default value is extracted from environment variables.
+-   `env` **any** the name of the Environment. Default value is extracted from environment variables.
+
+### create
+
+This method generates the Redis hash key.
+
+#### Parameters
+
+-   `className`  
+-   `method` **any** the name of the method invoking the cache. Default value is extracted from environment variables.
+-   `params` **...any** the parameters passed on to the invoked method.
+
+Returns **[string][76]** the hash key necessary for a cache key.
+
+## CachedObjectFactory
+
+**Extends Factory**
+
+This class allow the caching of any arbitrary objects. The class essentially caches the output of
+a the member methods within a Cache server. The class only offers a constructor. All cache management
+is performed using private members of this module and an options argument to the constructor.
+`NOTE:` constructors are never cached.
+
+### Parameters
+
+-   `$0` **[Object][81]** 
+    -   `$0.cacher`  
+    -   `$0.hashFactory`  
+    -   `$0.cacheHandlerFactory`  
+    -   `$0.passthroughHandlerFactory`  
+    -   `$0.mutatorHandlerFactory`  
+    -   `$0.defSchema`  
+    -   `$0.objSchema`  
+-   `cacher` **any** the wrapper for the cacher object.
+-   `hashFactory` **any** the hash factory.
+-   `cacheHandlerFactory` **any** the factory to create a cacheHandler.
+-   `passthroughHandlerFactory` **any** the factory to create a passthroughHandler.
+-   `mutatorHandlerFactory` **any** the factory to create a mutatorHandler.
+-   `defSchema` **[string][76]** the definitions for the cache options schema.
+-   `objSchema` **[string][76]** the validation schema for the cache options.
+
+### create
+
+Creates a cached object.
+
+#### Parameters
+
+-   `cacheableObject` **any** the object being cached.
+
+### cachify
+
+Returns a new cachified object.
+
+#### Parameters
+
+-   `cacheableObject` **any** the object being cached.
+
+Returns **any** returns the cached version of the cacheableObject.
+
+### validCacheOptions
+
+Validates the values and format of the options for a cacheable object.
+
+#### Parameters
+
+-   `options` **any** the options for a cacheable object.
+
+## Factory
+
+Abstract class that describes a Factory.
+
+### create
+
+Returns **any** an object of the type the factory is expected to generate.
+
+## Cacheable
+
+Abastract class that every cacheable object must inherit in order to be cached.
+
+### getOptions
+
+Returns **any** an object that defines caching options for individual methods.
+Mutators, passthroughs and custom ttl methods and method responses stored
+in special buckets are specified here. Default TTLs and buckets are also
+specified here.
+
+## Cacher
+
+The `Cacher` object exposes some general mathods necessary to us a caching system.
+This decouples the caching implementation from the general caching functions.
+
+### Parameters
+
+-   `app` **[string][76]** the name of the app.
+-   `env` **[string][76]** the environment.
+-   `storageManager` **any** an object that represents a cache manager, such as Redis.
+    The cache manager abstracts the inner functions of the caching client API.
+
+### getCachedValue
+
+Returns the cached value.
+
+#### Parameters
+
+-   `key` **[string][76]** the key for the cached value.
+
+Returns **any** returns the cached value.
+
+### setCachedValue
+
+Saves a given value into the cache with the associated key.
+
+#### Parameters
+
+-   `options` **any**  (optional, default `{}`)
+    -   `options.key` **[string][76]** the key for the cached value.
+    -   `options.cachedObject` **[string][76]** the name of the object.
+    -   `options.cachedMethod` **[string][76]** name of the method whos response is being cached.
+    -   `options.value` **any** the cached value.
+    -   `options.ttl` **[number][78]** the TTL for the cached value.
+    -   `options.buckets` **[Array][79]&lt;[string][76]>** a list of buckets.
+
+Returns **any** returns a response from the cache handler after the value is cached.
+
+### purgeBuckets
+
+Invalidates the keys from the associated buckets.
+
+#### Parameters
+
+-   `buckets` **[Array][79]&lt;[string][76]>** a list of buckets.
+
+Returns **[boolean][80]** returns whether the buckets were purged or not.
+
+[1]: #getstoragemanager
+
+[2]: #parameters
+
+[3]: #getcacher
+
+[4]: #parameters-1
+
+[5]: #gethashfactory
+
+[6]: #parameters-2
+
+[7]: #getcachedobjectfactory
+
+[8]: #parameters-3
+
+[9]: #passthroughmethodhandlerfactory
+
+[10]: #create
+
+[11]: #passthroughmethodhandler
+
+[12]: #apply
 
 [13]: #parameters-4
 
-[14]: #cacher
+[14]: #cachedmethodhandlerfactory
 
-[15]: #parameters-5
+[15]: #create-1
 
-[16]: #getcachedvalue
+[16]: #parameters-5
 
-[17]: #parameters-6
+[17]: #methodhandlerfactory
 
-[18]: #setcachedvalue
+[18]: #cachedmethodhandler
 
-[19]: #parameters-7
+[19]: #parameters-6
 
-[20]: #purgebuckets
+[20]: #apply-1
 
-[21]: #parameters-8
+[21]: #parameters-7
 
-[22]: #handlerfactory
+[22]: #mutatormethodhandlerfactory
 
-[23]: #create-1
+[23]: #create-2
 
-[24]: #hashfactory
+[24]: #parameters-8
 
-[25]: #parameters-9
+[25]: #mutatormethodhandler
 
-[26]: #create-2
+[26]: #parameters-9
 
-[27]: #parameters-10
+[27]: #apply-2
 
-[28]: #mutatorhandlerfactory
+[28]: #parameters-10
 
-[29]: #create-3
+[29]: #redisstoragemanager
 
-[30]: #parameters-11
+[30]: #getcachedvalue
 
-[31]: #mutatorhandler
+[31]: #parameters-11
 
-[32]: #parameters-12
+[32]: #setcachedvalue
 
-[33]: #apply-1
+[33]: #parameters-12
 
-[34]: #parameters-13
+[34]: #purgebuckets
 
-[35]: #passthroughhandlerfactory
+[35]: #parameters-13
 
-[36]: #create-4
+[36]: #initgarbagecollector
 
-[37]: #passthroughhandler
+[37]: #handlegcmessage
 
-[38]: #apply-2
+[38]: #parameters-14
 
-[39]: #parameters-14
+[39]: #on
 
-[40]: #redismanager
+[40]: #storagemanager
 
 [41]: #getcachedvalue-1
 
@@ -406,14 +596,72 @@ Returns **[boolean][51]** returns `true` for success, and `false` for failure.
 
 [46]: #parameters-17
 
-[47]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object
+[47]: #appenvhashfactory
 
-[48]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String
+[48]: #parameters-18
 
-[49]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number
+[49]: #create-3
 
-[50]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array
+[50]: #parameters-19
 
-[51]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean
+[51]: #hashfactory
 
-[52]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise
+[52]: #envhashfactory
+
+[53]: #parameters-20
+
+[54]: #create-4
+
+[55]: #parameters-21
+
+[56]: #cachedobjectfactory
+
+[57]: #parameters-22
+
+[58]: #create-5
+
+[59]: #parameters-23
+
+[60]: #cachify
+
+[61]: #parameters-24
+
+[62]: #validcacheoptions
+
+[63]: #parameters-25
+
+[64]: #factory
+
+[65]: #create-6
+
+[66]: #cacheable
+
+[67]: #getoptions
+
+[68]: #cacher
+
+[69]: #parameters-26
+
+[70]: #getcachedvalue-2
+
+[71]: #parameters-27
+
+[72]: #setcachedvalue-2
+
+[73]: #parameters-28
+
+[74]: #purgebuckets-2
+
+[75]: #parameters-29
+
+[76]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String
+
+[77]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise
+
+[78]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number
+
+[79]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array
+
+[80]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean
+
+[81]: https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object
