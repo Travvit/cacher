@@ -180,11 +180,16 @@ class TestClass extends Cacheable {
 
 You can then used it as follows:
 ```javascript
-const { CacheFactory } = require('tz-cacher');
+const { getCachedObjectFactory } = require('tz-cacher');
 
 const cacheableObject = new TestClass();
 
-const cachedObject = await CacheFactory.cachify(cacheableObject);
+const app = 'my-app';
+const env = 'development';
+const hashFactoryName = 'AppEnv'; // Possible values, AppEnv and Env
+const storageName = 'Redis';
+
+const cachedObject = await getCachedObjectFactory({ app, env, hashFactoryName, storageName }).cachify(cacheableObject);
 
 // Call the methods of the cached object
 cachedObject.ttlBucketsMethod('Tester');
