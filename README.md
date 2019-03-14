@@ -1,6 +1,6 @@
 # tz-cacher
 
-2.0.0
+2.1.0
 
 This library enables caching objects that implement the `Cacheable` interface. It does the hard work for you so you don't have to! 😎
 
@@ -180,7 +180,7 @@ class TestClass extends Cacheable {
 
 You can then used it as follows:
 ```javascript
-const { getCachedObjectFactory } = require('tz-cacher');
+const { CacheAssembler } = require('tz-cacher');
 
 const cacheableObject = new TestClass();
 
@@ -189,7 +189,7 @@ const env = 'development';
 const hashFactoryName = 'AppEnv'; // Possible values, AppEnv and Env
 const storageName = 'Redis';
 
-const cachedObject = await getCachedObjectFactory({ app, env, hashFactoryName, storageName }).cachify(cacheableObject);
+const cachedObject = await CacheAssembler.getCachedObjectFactory({ app, env, hashFactoryName, storageName }).cachify(cacheableObject);
 
 // Call the methods of the cached object
 cachedObject.ttlBucketsMethod('Tester');
