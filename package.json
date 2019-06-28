@@ -1,6 +1,6 @@
 {
   "name": "tz-cacher",
-  "version": "2.2.0",
+  "version": "2.2.1",
   "description": "A library for caching Tranzact components.",
   "main": "index.js",
   "scripts": {
