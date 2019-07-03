@@ -1,9 +1,9 @@
-const Cacheable = require('../../cacheable.js');
+const Cacheable = require('../../../lib/cacheable.js');
 
 /**
  * The caching options for this class will fail JSON Schema validation
  */
-class DuplicateMethods extends Cacheable {
+class MethodGlobalBucket extends Cacheable {
     getOptions() {
         return {
             ttl: 5,
@@ -14,14 +14,12 @@ class DuplicateMethods extends Cacheable {
                     type: 'passthrough'
                 }, {
                     name: 'methodTwo',
-                    type: 'passthrough'
-                }, {
-                    name: 'methodOne',
-                    type: 'passthrough'
+                    type: 'cacheable',
+                    buckets: ['GLOBAL']
                 }
             ]
         };
     }
 }
 
-module.exports = DuplicateMethods;
+module.exports = MethodGlobalBucket;

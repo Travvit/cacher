@@ -2,10 +2,10 @@
 /* eslint-disable no-unused-expressions */
 const chai = require('chai').use(require('chai-as-promised'));
 
-const { expect, assert } = chai;
+const { expect } = chai;
 
 // Test Subject
-const timer = require('../../utils/timer.js');
+const timer = require('../../lib/utils/timer.js');
 
 describe('Timer', () => {
     describe('#start', () => {

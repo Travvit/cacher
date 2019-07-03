@@ -5,7 +5,7 @@ const chai = require('chai').use(require('chai-as-promised'));
 const { expect, assert } = chai;
 
 // Test Subject
-const StorageManager = require('../../storageManagers/storageManager.js');
+const StorageManager = require('../../lib/storageManagers/storageManager.js');
 
 describe('StorageManager', () => {
     const storageManager = new StorageManager({ app: 'test-app', env: 'test-env', instance: 'test-instance' });

@@ -21,7 +21,7 @@ const _ = require('lodash');
 const EventEmitter = require('events');
 
 // Load assembler
-const cacheAssembler = require('../../cache.assembler.js');
+const cacheAssembler = require('../../lib/cache.assembler.js');
 
 /* Constants and flags */
 const APP_NAME = process.env.APP_NAME ? process.env.APP_NAME : 'tz-permissions';
@@ -89,12 +89,12 @@ async function handleRedisMessage(channel, message) {
 }
 
 describe('CachedObjectFactory integration test', () => {
-    const cacheableObject = require('../fixtures/testClass.stub.js');
-    const NonCacheable = require('../fixtures/nonCacheable.stub.js');
-    const InvalidOptionsSchema = require('../fixtures/invalidOptionsSchema.stub.js');
-    const DuplicateMethods = require('../fixtures/duplicateMethods.stub.js');
-    const DefaultGlobalBucket = require('../fixtures/defaultGlobalBucket.stub.js');
-    const MethodGlobalBucket = require('../fixtures/methodGlobalBucket.stub.js');
+    const cacheableObject = require('../fixtures/stubs/testClass.stub.js');
+    const NonCacheable = require('../fixtures/stubs/nonCacheable.stub.js');
+    const InvalidOptionsSchema = require('../fixtures/stubs/invalidOptionsSchema.stub.js');
+    const DuplicateMethods = require('../fixtures/stubs/duplicateMethods.stub.js');
+    const DefaultGlobalBucket = require('../fixtures/stubs/defaultGlobalBucket.stub.js');
+    const MethodGlobalBucket = require('../fixtures/stubs/methodGlobalBucket.stub.js');
 
     let cachedObjectFactory;
     let cachedObject;

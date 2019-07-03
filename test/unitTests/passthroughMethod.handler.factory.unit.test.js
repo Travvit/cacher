@@ -5,7 +5,7 @@ const chai = require('chai').use(require('chai-as-promised'));
 const { expect } = chai;
 
 // Test Subject
-const passthroughMethodHandlerFactory = require('../../factories/passthroughMethod.handler.factory.js');
+const passthroughMethodHandlerFactory = require('../../lib/factories/passthroughMethod.handler.factory.js');
 
 describe('PassthroughMethodHandlerFactory', () => {
     const factory = passthroughMethodHandlerFactory.create();

@@ -5,7 +5,7 @@ const chai = require('chai').use(require('chai-as-promised'));
 const { expect } = chai;
 
 // Test Subject
-const GarbageCollector = require('../../garbageCollectors/garbageCollector.js');
+const GarbageCollector = require('../../lib/garbageCollectors/garbageCollector.js');
 
 describe('Cacheable', () => {
     const garbageCollector = new GarbageCollector();
