@@ -15,6 +15,10 @@
     "type": "git",
     "url": "git@gitlab.zayo.com:tranzact/tz-cacher.git"
   },
+  "files": [
+      "lib/**/*",
+      "docs/*"
+  ],
   "keywords": [
     "Cacher",
     "cache",
