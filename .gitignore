@@ -5,7 +5,6 @@ npm-debug.log
 .vscode
 .env
 env.local.json
-env.local.defaults.json
 configvar.json
 *.DS_Store
 /coverage/
