@@ -16,8 +16,8 @@
     "url": "git@gitlab.zayo.com:tranzact/tz-cacher.git"
   },
   "files": [
-      "lib/**/*",
-      "docs/*"
+    "lib/**/*",
+    "docs/*"
   ],
   "keywords": [
     "Cacher",
