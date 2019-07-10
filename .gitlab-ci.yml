@@ -2,31 +2,49 @@ image: node:latest
 
 stages:
     - test
+    - build
+    - before_deploy
     - deploy
 
 .install_authenticate_heroku: &install_authenticate_heroku |
     curl https://cli-assets.heroku.com/install.sh | sh
     echo "" > ~/.netrc && echo "machine api.heroku.com" >> ~/.netrc && echo "  password $HEROKU_API_KEY" >> ~/.netrc && echo "  login tranzact.admin@zayo.com" >> ~/.netrc && echo "machine git.heroku.com" >> ~/.netrc && echo "  password $HEROKU_API_KEY" >> ~/.netrc && echo "  login tranzact.admin@zayo.com" >> ~/.netrc
 
-NPM Test:
-    stage: test
-    only: 
-        - addtestjobs@tranzact/tz-cacher
-        - dev@tranzact/tz-cacher
-        - master@tranzact/tz-cacher
-    allow_failure: false
-    script:
-        - npm install
-        - npm test
 
-Update FixesList (automatic):
+before_script:
+  - echo "Setting up library for CI..."
+  - npm install
+  - npm install devops-tools
+
+NPM Tests:
   stage: test
-  allow_failure: true
+  allow_failure: false
   script:
-      - npm install devops-tools
+      - echo "Running tests..."
       - *install_authenticate_heroku
       - ./node_modules/.bin/gitlabeler --update-fixes-list $CI_COMMIT_REF_NAME --project-id $PROJECT_ID
       - ./node_modules/.bin/gitlabeler --label-deploy $CI_COMMIT_REF_NAME --debug
+      - npm test
+
+TypeScript Build Dev:
+    stage: build
+    only:
+        - dev@tranzact/tz-cacher
+    allow_failure: false
+    when: on_success
+    script:
+        - echo "Building before deploying to dev..."
+        - npm run document
+
+# TypeScript Build Master:
+#     stage: before_deploy
+#     only:
+#         - master@tranzact/tz-cacher
+#     allow_failure: false
+#     when: on_success
+#     script:
+#         - echo "Building before deploying to Gemfury..."
+#         - npm run build
 
 Gemfury Deploy:
     stage: deploy
