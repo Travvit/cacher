@@ -3,17 +3,17 @@ const chai = require('chai').use(require('chai-as-promised'));
 const { expect, assert } = chai;
 
 // Test Subject
-const HashFactory = require('../../factories/env.hash.factory.js');
+const HashFactory = require('../../lib/factories/appenv.hash.factory.js');
 
-describe('EnvHashFactory', () => {
+describe('AppEnvHashFactory', () => {
     const factory = new HashFactory('tz-cacher-dev', 'development');
     describe('#create', () => {
-        const hashWithMethodOnly = '1968ea55df4804e65bf25936d86377cbe34853cd';
-        const hashWithMethodAndNullParam = 'fedb3fa3e700c1004b6fd43e60ed8a4a9cc71971';
-        const hashWithMethodAndIntegerParam = '31dec32027267401c8debf0ad92c41d3db2aa6ca';
-        const hashWithMethodAndStringParam = '5c317e1ed82e1fcab1af7e5b1502e494c49af141';
-        const hashWithMethodAndArrayParam = 'ad32dd1a4122e65bd04654e78f1d0f8fd1a1fe05';
-        const hashWithMethodAndObjectParam = 'e32c782698442f15495046edb20173e16cbe6758';
+        const hashWithMethodOnly = 'e10128314fca3398bf60d76afdfda4a960db2753';
+        const hashWithMethodAndNullParam = 'f72c1ecd6022fc67545e302acf3466be987c2f26';
+        const hashWithMethodAndIntegerParam = '3b2f29e19a5d011bff7109da44d628403456683c';
+        const hashWithMethodAndStringParam = '6f4945f03fd2d860320f21b2653602b66573bccd';
+        const hashWithMethodAndArrayParam = 'b0d513bc22e9bea35b202ceca2eb64fb9943d244';
+        const hashWithMethodAndObjectParam = 'f4b593655a6725520c54c4e021b52e4799054c28';
 
         it('Returns error when class name is missing.', async () => {
             try {

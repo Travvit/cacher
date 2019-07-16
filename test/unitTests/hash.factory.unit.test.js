@@ -3,7 +3,7 @@ const chai = require('chai').use(require('chai-as-promised'));
 const { expect } = chai;
 
 // Test Subject
-const HashFactory = require('../../factories/hash.factory.js');
+const HashFactory = require('../../lib/factories/hash.factory.js');
 
 describe('HashFactory', () => {
     const hashFactory = new HashFactory();

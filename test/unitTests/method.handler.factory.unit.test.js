@@ -3,7 +3,7 @@ const chai = require('chai').use(require('chai-as-promised'));
 const { expect } = chai;
 
 // Test Subject
-const MethodHandlerFactory = require('../../factories/method.handler.factory.js');
+const MethodHandlerFactory = require('../../lib/factories/method.handler.factory.js');
 
 describe('MethodHandlerFactory', () => {
     const methodHandlerFactory = new MethodHandlerFactory();

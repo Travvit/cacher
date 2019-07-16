@@ -5,10 +5,10 @@ const chai = require('chai').use(require('chai-as-promised'));
 const { expect, assert } = chai;
 
 // Test Subject
-const Cacher = require('../../cacher.js');
+const Cacher = require('../../lib/cacher.js');
 
 // Stubs
-const CacheManagerStub = require('./stubs/cacheManager.stub.js');
+const CacheManagerStub = require('../fixtures/stubs/cacheManager.stub.js');
 
 /* Constants and flags */
 const APP_NAME = 'tz-cacher';

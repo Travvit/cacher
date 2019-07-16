@@ -5,12 +5,12 @@ const chai = require('chai').use(require('chai-as-promised'));
 const { expect, assert } = chai;
 
 // Test Subject
-const CachedMethodHandler = require('../../methodHandlers/cachedMethod.handler.js');
+const CachedMethodHandler = require('../../lib/methodHandlers/cachedMethod.handler.js');
 
 // Stubs
-const cacher = require('./stubs/cacher.stub.js');
-const hashFactory = require('./stubs/hash.factory.stub.js');
-const cachedObj = require('../fixtures/testClass.stub.js');
+const cacher = require('../fixtures/stubs/cacher.stub.js');
+const hashFactory = require('../fixtures/stubs/hash.factory.stub.js');
+const cachedObj = require('../fixtures/stubs/testClass.stub.js');
 
 describe('CachedMethodHandler', () => {
     const cachedMethodHandler = new CachedMethodHandler(cacher, hashFactory);

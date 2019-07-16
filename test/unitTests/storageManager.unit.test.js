@@ -5,15 +5,15 @@ const chai = require('chai').use(require('chai-as-promised'));
 const { expect, assert } = chai;
 
 // Test Subject
-const StorageManager = require('../../storageManagers/storageManager.js');
+const StorageManager = require('../../lib/storageManagers/storageManager.js');
 
 describe('StorageManager', () => {
-    const storageManager = new StorageManager();
+    const storageManager = new StorageManager({ app: 'test-app', env: 'test-env', instance: 'test-instance' });
     it('Gives an instance of a StorageManager', async () => {
         expect(storageManager.constructor.name).to.equal('StorageManager');
     });
     it('Ensures a StorageManager is an event emitter', async () => {
-        assert.containsAllKeys(storageManager, ['domain', '_events', '_eventsCount', '_maxListeners']);
+        assert.containsAllKeys(storageManager, ['_events', '_eventsCount', '_maxListeners', 'app', 'env', 'instance']);
     });
     it('#getCachedValue', async () => {
         let result = await storageManager.getCachedValue();

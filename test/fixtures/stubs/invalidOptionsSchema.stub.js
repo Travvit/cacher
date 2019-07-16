@@ -1,4 +1,4 @@
-const Cacheable = require('../../cacheable.js');
+const Cacheable = require('../../../lib/cacheable.js');
 
 /**
  * The caching options for this class will fail JSON Schema validation

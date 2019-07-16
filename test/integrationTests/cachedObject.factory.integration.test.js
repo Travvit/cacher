@@ -10,6 +10,7 @@ process.env.NODE_ENV = 'development';
 process.env.APP_NAME = 'tz-cacher-dev';
 
 const chai = require('chai').use(require('chai-as-promised'));
+const sinon = require('sinon');
 
 const { promisify } = require('util');
 
@@ -20,7 +21,7 @@ const _ = require('lodash');
 const EventEmitter = require('events');
 
 // Load assembler
-const CacheAssembler = require('../../cache.assembler.js');
+const cacheAssembler = require('../../lib/cache.assembler.js');
 
 /* Constants and flags */
 const APP_NAME = process.env.APP_NAME ? process.env.APP_NAME : 'tz-permissions';
@@ -87,13 +88,13 @@ async function handleRedisMessage(channel, message) {
     return true;
 }
 
-describe('CachedObjectFactory', () => {
-    const cacheableObject = require('../fixtures/testClass.stub.js');
-    const NonCacheable = require('../fixtures/nonCacheable.stub.js');
-    const InvalidOptionsSchema = require('../fixtures/invalidOptionsSchema.stub.js');
-    const DuplicateMethods = require('../fixtures/duplicateMethods.stub.js');
-    const DefaultGlobalBucket = require('../fixtures/defaultGlobalBucket.stub.js');
-    const MethodGlobalBucket = require('../fixtures/methodGlobalBucket.stub.js');
+describe('CachedObjectFactory integration test', () => {
+    const cacheableObject = require('../fixtures/stubs/testClass.stub.js');
+    const NonCacheable = require('../fixtures/stubs/nonCacheable.stub.js');
+    const InvalidOptionsSchema = require('../fixtures/stubs/invalidOptionsSchema.stub.js');
+    const DuplicateMethods = require('../fixtures/stubs/duplicateMethods.stub.js');
+    const DefaultGlobalBucket = require('../fixtures/stubs/defaultGlobalBucket.stub.js');
+    const MethodGlobalBucket = require('../fixtures/stubs/methodGlobalBucket.stub.js');
 
     let cachedObjectFactory;
     let cachedObject;
@@ -113,12 +114,29 @@ describe('CachedObjectFactory', () => {
     redisPSClient.subscribe(`${NODE_ENV}:bucket_del`);
     redisPSClient.on('message', handleRedisMessage.bind(this));
 
+    /* Spies */
+    let loggerSpy;
+
     before(async () => {
-        cachedObjectFactory = CacheAssembler.getCachedObjectFactory({ app: 'tz-cacher-dev', env: NODE_ENV, hashFactoryName: 'AppEnv', storageName: 'Redis' });
-        hashFactory = CacheAssembler.getHashFactory('AppEnv');
+        loggerSpy = sinon.spy(logger, 'log');
+        cachedObjectFactory = cacheAssembler.getCachedObjectFactory({ app: 'tz-cacher-dev', env: NODE_ENV, hashFactoryName: 'AppEnv', storageName: 'Redis' });
+        hashFactory = cacheAssembler.getHashFactory('AppEnv');
         cachedObject = await cachedObjectFactory.cachify(cacheableObject);
         // Adding 5 seconds delay
         await sleep(5000);
+    });
+
+    afterEach(() => {
+        sinon.resetHistory();
+    });
+
+    after(() => {
+        sinon.restore();
+    });
+
+    it('Ensures connections were setup correctly', () => {
+        expect(loggerSpy.getCall(0).args[0]).to.contain('Initializing Garbage collector for RedisStorageManager...');
+        expect(loggerSpy.getCall(1).args[0]).to.contain('New R/W connection: tz-cacher-dev.development.READ_WRITE_CONN.WEB.DEFAULT');
     });
 
     describe('#cachify', async () => {

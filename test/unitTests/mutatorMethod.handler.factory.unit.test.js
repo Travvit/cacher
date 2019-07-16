@@ -5,10 +5,10 @@ const chai = require('chai').use(require('chai-as-promised'));
 const { expect, assert } = chai;
 
 // Test Subject
-const mutatorMethodHandlerFactory = require('../../factories/mutatorMethod.handler.factory.js');
+const mutatorMethodHandlerFactory = require('../../lib/factories/mutatorMethod.handler.factory.js');
 
 // Stubs
-const cacher = require('./stubs/cacher.stub.js');
+const cacher = require('../fixtures/stubs/cacher.stub.js');
 
 describe('MutatorMethodHandlerFactory', () => {
     const factory = mutatorMethodHandlerFactory.create(cacher);

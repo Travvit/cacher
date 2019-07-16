@@ -1,18 +1,61 @@
-variables:
-    GEMFURY_TOKEN: "3gusRyJQczSYczah31qq"
-    GEMFURY_ORG_ID: "h_app47568534"
-    GEMFURY_PACKAGE_NAME: "tz-cacher"
-    GEMFURY_USER_NAME: "tzadmin"
-    GITLAB_TOKEN: "gzV_z4pciEqqFvdyLtpZ"
+image: node:latest
 
+stages:
+    - test
+    - build
+    - before_deploy
+    - deploy
+
+.install_authenticate_heroku: &install_authenticate_heroku |
+    curl https://cli-assets.heroku.com/install.sh | sh
+    echo "" > ~/.netrc && echo "machine api.heroku.com" >> ~/.netrc && echo "  password $HEROKU_API_KEY" >> ~/.netrc && echo "  login tranzact.admin@zayo.com" >> ~/.netrc && echo "machine git.heroku.com" >> ~/.netrc && echo "  password $HEROKU_API_KEY" >> ~/.netrc && echo "  login tranzact.admin@zayo.com" >> ~/.netrc
+
+
+before_script:
+  - echo "Setting up library for CI..."
+  - npm install
+  - npm install devops-tools
+
+NPM Tests:
+  stage: test
+  allow_failure: false
+  script:
+      - echo "Running tests..."
+      - *install_authenticate_heroku
+      - ./node_modules/.bin/gitlabeler --update-fixes-list $CI_COMMIT_REF_NAME --project-id $PROJECT_ID
+      - ./node_modules/.bin/gitlabeler --label-deploy $CI_COMMIT_REF_NAME --debug
+      - npm test
+
+TypeScript Build Dev:
+    stage: build
+    only:
+        - dev@tranzact/tz-cacher
+    allow_failure: false
+    when: on_success
+    script:
+        - echo "Building before deploying to dev..."
+        - npm run document
+
+# TypeScript Build Master:
+#     stage: before_deploy
+#     only:
+#         - master@tranzact/tz-cacher
+#     allow_failure: false
+#     when: on_success
+#     script:
+#         - echo "Building before deploying to Gemfury..."
+#         - npm run build
 
 Gemfury Deploy:
     stage: deploy
     only:
         - master@tranzact/tz-cacher
     allow_failure: false
+    when: on_success
     script:
         - git fetch origin
-        - git checkout -B master origin/master
-        - git remote add fury https://$GEMFURY_USER_NAME:$GEMFURY_TOKEN@git.fury.io/$GEMFURY_ORG_ID/$GEMFURY_PACKAGE_NAME.git || git remote set-url fury https://$GEMFURY_USER_NAME:$GEMFURY_TOKEN@git.fury.io/$GEMFURY_ORG_ID/$GEMFURY_PACKAGE_NAME.git
-        - git push fury master
+        - git checkout -B $CI_COMMIT_REF_NAME origin/$CI_COMMIT_REF_NAME
+        - echo //npm-proxy.fury.io/LtRdpHZP-NRCQ-GyAc2Y/$GEMFURY_ORG_ID/:_authToken=$GEMFURY_TOKEN >> ~/.npmrc
+        - npm i
+        - npm publish
+

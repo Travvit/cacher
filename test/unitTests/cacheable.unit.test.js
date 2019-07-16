@@ -5,7 +5,7 @@ const chai = require('chai').use(require('chai-as-promised'));
 const { expect } = chai;
 
 // Test Subject
-const Cacheable = require('../../cacheable.js');
+const Cacheable = require('../../lib/cacheable.js');
 
 describe('Cacheable', () => {
     const cacheable = new Cacheable();

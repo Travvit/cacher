@@ -1,13 +1,11 @@
 # tz-cacher
 
-2.2.0
-
 This library enables caching objects that implement the `Cacheable` interface. It does the hard work for you so you don't have to! 😎
 
 # Table of Contents
 
 ## Summary
-It is very important to utilize a caching service or server to speedup the response of a Node.js application. A long running query or heavy I/O operation can slow down an application. Often times developers use a client library for a backing server/service to cache responses of long running processes within their application. However, this creates a direct dependency of the caching code with the caching library and the underlying service.
+It is very important to utilize a caching service or server to speedup the response of any application. A long running query or heavy I/O operation can slow down an application. Often times developers use a client library for a backing server/service to cache responses of long running processes within their application. However, this creates a direct dependency of the caching code with the caching library and the underlying service.
 
 There are also concerns with users being served stale/outdated or invalid data from the cache. An example of this would be user permission related objects, that have been cached. If any of the underlying data for user permission is updated, a significant number of the cached data would need to be evicted from the cache as soon as the update is applied.
 
@@ -231,6 +229,8 @@ Returns a new cachified object.
 Returns **[object]** returns the cached version of the cacheableObject.
 
 ## Note
+
+Apart from the configurable options mentioned earlier, the `RedisStorageManager` creates a named Read/Write connection to the Redis server. The format of the connection name is: `{app}.{env}.{ctype}.{instance}`.
 
 Links within this documents to other documents within this repo, may not work locally. Please refer to the documents online within the [GitLab repository](https://gitlab.zayo.com/tranzact/tz-cacher).
 
